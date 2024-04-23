@@ -47,8 +47,6 @@ typedef struct{
     double posicion_y;
     double posicion_z;
     
-
-
 }estado_analizador;
 
 typedef struct
