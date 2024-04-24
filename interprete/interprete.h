@@ -27,11 +27,12 @@ typedef struct{
 }gcode_valores;
 
 class Instruccion{
-    gcode_valores valores;
+    //gcode_valores valores;
     unsigned int instruccion;
 
     public:
-    Instruccion(unsigned int instruccion);
+        gcode_valores valores;
+        void setInstruccion(unsigned int instruccion);
 };
 
 class Interprete

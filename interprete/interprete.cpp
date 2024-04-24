@@ -1,13 +1,22 @@
 #include "interprete.h"
 #include "../errores.h"
 #include <iostream>
+#include <cmath>
+
+
+#define INSTRUCCION_CON_ARMENTOS_XYZ 1
 bool leer_flotante(std::string linea, int* indice, double* valor);
 
 Instruccion* Interprete::interpretar_bloque_gcode(std::string linea, int* error){
 
     int indice_caracter = 0;
     double valor = 0;
+
+    Instruccion* instruccion = new Instruccion();
+
     while(linea[indice_caracter] != '\0'){
+
+
         char letra = linea[indice_caracter];
         if(letra<'A' || 'Z'<letra) {*error = ERROR_LETRA_ESPERADA; return NULL;}
         indice_caracter++;
@@ -16,13 +25,39 @@ Instruccion* Interprete::interpretar_bloque_gcode(std::string linea, int* error)
             return NULL;
         }
 
+        int valor_entero = std::round(valor);
+        int tipo_instruccion = 0;
+
+        switch (letra){
+            case 'G':
+                switch (valor_entero)
+                {
+                case 0:
+                    if(tipo_instruccion == INSTRUCCION_CON_ARMENTOS_XYZ){
+                        *error = ERROR_INSTRUC_CON_ARGUMENTOS_MULTIPLES;
+                        return NULL;
+                    }
+                    tipo_instruccion = INSTRUCCION_CON_ARMENTOS_XYZ;
+                    instruccion->setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE);
+
+                    break;
+                
+                default:
+                    break;
+                }
+                break;
+            case 'M':
+
+
+                break;
+        }
         
     }
-    return new Instruccion(DESPLAZAMIENTO_LINEAL_LIBRE);
-
+    return instruccion;
 }
 
-Instruccion::Instruccion(unsigned int instruccion){
+
+void Instruccion::setInstruccion(unsigned int  instruccion){
     this->instruccion = instruccion;
 }
 
