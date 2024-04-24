@@ -3,7 +3,7 @@
 #ifndef GCODE
 #define GCODE
 
-#include <string>
+
 
 //GRUPOS MODALES
 #define GRUPO_MODAL_0 0 //G28
@@ -32,13 +32,7 @@
 #define DETENER_HERRAMIENTA 5 // M5
 
 
-typedef struct{
-    double x; //eje x
-    double y; //eje y
-    double z; //eje z
-    int N; // numero de linea
-    double f; // feedrate
-}gcode_valores;
+
 
 typedef struct{
     double feedrate;
@@ -46,12 +40,11 @@ typedef struct{
     double posicion_x;
     double posicion_y;
     double posicion_z;
-    
 }estado_analizador;
 
 typedef struct
 {
-    gcode_valores valores;
+   
 
 } gcode_bloque;
 
