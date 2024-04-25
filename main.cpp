@@ -18,8 +18,8 @@ int main(int argc, char const *argv[])
             std::getline(std::cin,gcode_bloque);
             std::cout<<gcode_bloque<<std::endl;
             if(! interprete_gcode->interpretar_bloque_gcode(gcode_bloque, &error) ){
-                std::cout<<error<<std::endl;
-            };  
+                std::cout<<obtener_error(error, gcode_bloque)<<std::endl;
+            };
         }
         
     }

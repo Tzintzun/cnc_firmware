@@ -1,28 +1,27 @@
 #include "interprete.h"
-#include "../errores.h"
-#include <iostream>
-#include <cmath>
 
 
-#define INSTRUCCION_CON_ARMENTOS_XYZ 1
+#define SIN_INSTRUCCION 0
+#define INSTRUCCION_CON_ARGUMENTOS_XYZ 1
 bool leer_flotante(std::string linea, int* indice, double* valor);
 
-Instruccion* Interprete::interpretar_bloque_gcode(std::string linea, int* error){
+std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea, int* error){
 
     int indice_caracter = 0;
     double valor = 0;
-
+    int bandera_palabra = 0;
+    int bandera_comando = 0;
+    std::queue<Instruccion *> instrucciones_bloque;
     Instruccion* instruccion = new Instruccion();
 
     while(linea[indice_caracter] != '\0'){
 
 
         char letra = linea[indice_caracter];
-        if(letra<'A' || 'Z'<letra) {*error = ERROR_LETRA_ESPERADA; return NULL;}
+        if(letra<'A' || 'Z'<letra) {FAIL_INTERPRETE(ERROR_LETRA_ESPERADA);}
         indice_caracter++;
         if(!leer_flotante(linea, &indice_caracter, &valor)){
-            *error = ERROR_FORMATO_NUMERO_INCORRECTO;
-            return NULL;
+            FAIL_INTERPRETE(ERROR_FORMATO_NUMERO_INCORRECTO)
         }
 
         int valor_entero = std::round(valor);
@@ -32,18 +31,50 @@ Instruccion* Interprete::interpretar_bloque_gcode(std::string linea, int* error)
             case 'G':
                 switch (valor_entero)
                 {
-                case 0:
-                    if(tipo_instruccion == INSTRUCCION_CON_ARMENTOS_XYZ){
-                        *error = ERROR_INSTRUC_CON_ARGUMENTOS_MULTIPLES;
-                        return NULL;
-                    }
-                    tipo_instruccion = INSTRUCCION_CON_ARMENTOS_XYZ;
-                    instruccion->setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE);
+                    case 0: case 1:
+                        if(tipo_instruccion == INSTRUCCION_CON_ARGUMENTOS_XYZ){
+                            FAIL_INTERPRETE(ERROR_MULTIPLES_INSTRUC_CON_ARGUMENTOS);
+                        }
+                        if((bandera_palabra &= 1<<GRUPO_MODAL_1) != 0 ){
+                            FAIL_INTERPRETE(ERROR_GRUPO_MODAL_CONFLICTO);
+                            
+                        }
+                        tipo_instruccion = INSTRUCCION_CON_ARGUMENTOS_XYZ;
+                        switch (valor_entero)
+                        {
+                            case 0:
+                                instruccion->setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE);
+                                break;
+                            case 1:
+                                instruccion->setInstruccion(INTERPOLACION_LINEAL);
+                                break;
+                            default:
+                                break;
+                        }
+                        bandera_palabra |= 1<<GRUPO_MODAL_1;
+                        break;
+                    case 90: case 91:
+                        if((bandera_palabra &= 1<<GRUPO_MODAL_3) != 0 ){
+                            FAIL_INTERPRETE(ERROR_GRUPO_MODAL_CONFLICTO);
+                        }
+                        Instruccion* aux = new Instruccion();
+                        switch (valor_entero)
+                        {
+                        case 90:
+                            aux->setInstruccion(MODO_DISTANCIA_ABSOLUTO);
+                            break;
+                        case 91:
+                            aux->setInstruccion(MODO_DISTANCIA_INCREMENTAL);
+                            break;
+                        }
+                        
+                        instrucciones_bloque.push(aux);
 
-                    break;
-                
-                default:
-                    break;
+
+                        break; 
+                    
+                    default:
+                        break;
                 }
                 break;
             case 'M':
@@ -53,7 +84,7 @@ Instruccion* Interprete::interpretar_bloque_gcode(std::string linea, int* error)
         }
         
     }
-    return instruccion;
+    //return instruccion;
 }
 
 
@@ -68,7 +99,6 @@ bool leer_flotante(std::string linea, int* indice, double* valor){
     int numero_digitos = 0;
     bool negativo = false;
     bool decimal = false;
-
     
 
     if(linea[indice_aux] == '-'){
@@ -81,6 +111,7 @@ bool leer_flotante(std::string linea, int* indice, double* valor){
     }
 
     int numero = (linea[indice_aux] - '0');
+    
     while(true){
         if(( numero>= 0 && numero<=9) || numero == ('.' - '0')){
             numero_digitos++;

@@ -1,10 +1,15 @@
 #ifndef __INTERPRETE__
 #define __INTERPRETE__
 #include "gcode.h"
+#include "interprete.h"
+#include "../errores.h"
+#include <iostream>
+#include <cmath>
 #include <string>
 #include <exception>
+#include <queue>
 
-
+#define FAIL_INTERPRETE(x) *error=x; return std::queue<Instruccion*>()
 class InterpreteExcepcion : public std::exception{
     public:
         InterpreteExcepcion(std::string mensaje){
@@ -38,7 +43,7 @@ class Instruccion{
 class Interprete
 {
     public:
-    Instruccion* interpretar_bloque_gcode(std::string linea, int* error);
+    std::queue<Instruccion*> interpretar_bloque_gcode(std::string linea, int* error);
     
 };
 
