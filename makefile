@@ -5,7 +5,7 @@ SRCS = main.cpp maquina.cpp herramienta.cpp errores.cpp interprete/interprete.cp
 OBJS = $(patsubst %.cpp, build/%.o, $(SRCS))
 
 main.exe: $(OBJS)
-	$(CC) $(CFLAGS) $^ -o build/%.o
+	$(CC) $(CFLAGS) $^ -o $@
 
 build/%.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@

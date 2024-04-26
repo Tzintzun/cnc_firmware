@@ -8,6 +8,7 @@
 #include <string>
 #include <exception>
 #include <queue>
+#include <list>
 
 #define FAIL_INTERPRETE(x) *error=x; return std::queue<Instruccion*>()
 class InterpreteExcepcion : public std::exception{
@@ -29,6 +30,7 @@ typedef struct{
     double z; //eje z
     int N; // numero de linea
     double f; // feedrate
+    int bandera_palabras;
 }gcode_valores;
 
 class Instruccion{
@@ -38,6 +40,7 @@ class Instruccion{
     public:
         gcode_valores valores;
         void setInstruccion(unsigned int instruccion);
+        unsigned int getInstruccion();
 };
 
 class Interprete
