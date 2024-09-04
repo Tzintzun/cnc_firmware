@@ -2,17 +2,27 @@
 #include <string>
 #include <queue>
 
-#include "interprete/interprete.h"
+#include "interprete.h"
 #include "errores.h"
+#include "inih/cpp/INIReader.h"
+#include "maquina.h"
 
 int main(int argc, char const *argv[])
 {
     std::string gcode_bloque;
-    Interprete* interprete_gcode = new Interprete();
+    INIReader reader("./cnc.ini");
+    if(reader.ParseError() < 0){
+        std::cout<<"ERROR ["<<reader.ParseError()<<"]: "<<"No se pudo cargar el archivo de configuracion"<<std::endl;
+        return -1;
+    }
+    MaquinaCNC maquina(reader);
+
+    std::cout<<maquina.toString()<<std::endl;
+    /*Interprete* interprete_gcode = new Interprete();
     std::queue<Instruccion *> cola_instrucciones;
     std::queue<Instruccion *> cola_instrucciones_aux;
     if(argc<2){
-        std::cout<<"G-code interprete"<<std::endl;
+        std::cout<<"MAQUINA CNC:"<<std::endl;
         int error = OK;
         while (true)
         {
@@ -38,7 +48,7 @@ int main(int argc, char const *argv[])
             }
         }
         
-    }
+    }*/
    
     return 0;
 }

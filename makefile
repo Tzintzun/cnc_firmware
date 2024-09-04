@@ -1,18 +1,22 @@
 CC = g++
 CFLAGS = -Wall -Wextra
 
-SRCS = main.cpp maquina.cpp herramienta.cpp errores.cpp interprete/interprete.cpp
-OBJS = $(patsubst %.cpp, build/%.o, $(SRCS))
+SRCS = main.cpp maquina.cpp herramienta.cpp errores.cpp interprete.cpp actuadores.cpp inih/ini.c inih/cpp/INIReader.cpp
+OBJS = $(patsubst %.cpp, build/%.o, $(patsubst %.c, build/%.o, $(SRCS)))
 
 main.exe: $(OBJS) build/
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $(OBJS) -o $@
 
 build/%.o: %.cpp build/
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Regla para compilar los archivos .c
+build/%.o: %.c build/
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 build/:
-	mkdir build/
+	mkdir -p build/inih/cpp
 .PHONY: clean
 clean:
-	rm -f build/*.o main.exe
+	rm -rf build main.exe
 

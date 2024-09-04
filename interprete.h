@@ -2,7 +2,7 @@
 #define __INTERPRETE__
 #include "gcode.h"
 #include "interprete.h"
-#include "../errores.h"
+#include "errores.h"
 #include <iostream>
 #include <cmath>
 #include <string>
