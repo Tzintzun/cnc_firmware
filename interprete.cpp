@@ -249,12 +249,12 @@ bool leer_flotante(std::string linea, int* indice, double* valor){
     
     int indice_aux = *indice;
     int numero_digitos = 0;
-    bool negativo = false;
+    //bool negativo = false;
     //bool decimal = false;
     
 
     if(linea[indice_aux] == '-'){
-        negativo = true;
+        //negativo = true;
         indice_aux++;
         numero_digitos++;
     }else if (linea[indice_aux] == '+'){

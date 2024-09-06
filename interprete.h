@@ -24,7 +24,7 @@ class InterpreteExcepcion : public std::exception{
 };
 //bool leer_flotante(std::string linea, int* indice, double* valor);
 
-typedef struct{
+typedef struct{ //Los ejes de movimiento deben de estar al principio de la estrucutra
     double x; //eje x
     double y; //eje y
     double z; //eje z

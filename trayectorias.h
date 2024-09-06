@@ -1,21 +1,31 @@
 #ifndef __ACTUADORES__
 #define __ACTUADORES__
 
+#include <cstring>
+#include <cmath>
+
+#include "gcode.h"
+#include "interprete.h"
 #include "configuracion.h"
 #include "inih/cpp/INIReader.h"
 
+
+#define FAIL_CALCULO_TRAYECTORIA(x) *error=x;  memset(&parametros,0,sizeof(parametros_actuadores)); return parametros
+
 typedef struct 
 {
-    long num_pasos;
-    double periodo_pasos;
-}parametros_actuador;
+    long num_pasos[NUM_EJES];
+    unsigned long periodo_pasos[NUM_EJES];
+    bool direccion[NUM_EJES]; //false: direccio -; true: direcion +;
+}parametros_actuadores;
 
 class CalculadoraTrayectorias{
     private:
     long pasos_mm[NUM_EJES]; //pasos por milimetro
     double area_trabajo [NUM_EJES];
-
+    double feedrate_desplazamiento;
     public:
+    parametros_actuadores calcular_trayectoria_lineal(Instruccion instruccion, double *posicion, bool unidades, int* error);
     CalculadoraTrayectorias(INIReader reader_conf);
     std::string toString();
     

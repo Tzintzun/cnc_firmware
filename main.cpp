@@ -2,17 +2,18 @@
 #include <string>
 #include <queue>
 
+
 #include "interprete.h"
 #include "errores.h"
 #include "inih/cpp/INIReader.h"
 #include "maquina.h"
 
-int main(int argc, char const *argv[])
+int main() //int argc, char const *argv[]
 {
     std::string gcode_bloque;
     INIReader reader("./cnc.ini");
     if(reader.ParseError() < 0){
-        std::cout<<"ERROR ["<<reader.ParseError()<<"]: "<<"No se pudo cargar el archivo de configuracion"<<std::endl;
+        std::cerr<<"ERROR ["<<reader.ParseError()<<"]: "<<"No se pudo cargar el archivo de configuracion"<<std::endl;
         return -1;
     }
     MaquinaCNC maquina(reader);

@@ -20,7 +20,7 @@
 #define CONF_UNIDADES_PULGADAS 21 //G21
 #define DESPLAZAMIENTO_A_CASA 28 //G28
 #define MODO_DISTANCIA_ABSOLUTO 90 //G90
-#define MODO_DISTANCIA_INCREMENTAL 91 //G91
+//#define MODO_DISTANCIA_INCREMENTAL 91 //G91
 
 
 //FUNCIONES M
@@ -36,12 +36,16 @@
 
 #define N_PALABRA 1<<0
 #define F_PALABRA 1<<1
+
+/*Los ejes deben de estar en roden consecutivo
+    Si se agrega un eje extra el corrimiento debe de ser 1<<5
+*/
 #define X_PALABRA 1<<2
 #define Y_PALABRA 1<<3
 #define Z_PALABRA 1<<4
 
 
-
+//#define FEEDRATE_ACTIVO
 
 typedef struct{
     double feedrate;

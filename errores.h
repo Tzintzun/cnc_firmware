@@ -13,6 +13,9 @@
 
 #define INSTRUCCION_NO_SOPORTADA 6
 
+//ERRORES EN EL CALCULO DE TRAYECTORIAS
+#define ERROR_INSTRUCCION_SIN_DESPLAZAMIENTO 7
+
 
 
 std::string obtener_error(int error, std::string linea);
