@@ -38,7 +38,7 @@ class ManipularActuadores{
 
 typedef struct 
 {
-    parametros_actuador parametros;
+    parametros_actuadores parametros;
     int pin;
     bool estado;
 }configuracion_actuador;

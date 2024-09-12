@@ -27,14 +27,23 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     double *aux = (double *)&valores;
     double vector = 0.0;
     double componentes[NUM_EJES];
+    memset(componentes,0, sizeof(double)*3);
 
     /*Calculamos los pasos * milimetro*/
-    for(int j=0; j<NUM_EJES; j++){
-        if((valores.bandera_palabras & (X_PALABRA+j)) == 1){
+    for(int j=0, i= X_PALABRA; j<NUM_EJES; j++){
+        
+        
+        
+        if((valores.bandera_palabras & i) != 0){
+            if(aux[j] >= area_trabajo[j]){
+                FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
+            }
             double distancia = aux[j] - posicion_actual[j];
+            std::cout<<distancia<<std::endl;
+            
             componentes[j] = distancia;
             vector += (distancia*distancia);
-            if(unidades){
+            if(!unidades){
                 parametros.num_pasos[j] = std::fabs(distancia)*(this->pasos_mm[j]);
             }else{
                 parametros.num_pasos[j] = std::fabs(distancia)*MM_TO_INCH*(this->pasos_mm[j]);
@@ -49,14 +58,15 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         }else{
             parametros.num_pasos[j] = 0;
         }
+        i= i<<1;
     }
 
     vector = sqrt(vector);
-
+    double tiempo = 0.0;
     switch (instruccion.getInstruccion())
     {
     case DESPLAZAMIENTO_LINEAL_LIBRE:
-        double tiempo = vector/(feedrate_desplazamiento); // (min/mm)*mm = min
+        tiempo = vector/(feedrate_desplazamiento); // (min/mm)*mm = min
                                                         // seg = 60*min;
                                                         // nanoseg = 1000000000*seg
         for(int j=0; j<NUM_EJES; j++){
@@ -66,23 +76,36 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     case INTERPOLACION_LINEAL:
 
         if(instruccion.valores.bandera_palabras & F_PALABRA && (instruccion.valores.f > 0.0)){ //configurar una velocidad minima;
-            double tiempo = vector/(instruccion.valores.f);
+            tiempo = vector/(instruccion.valores.f);
             for(int j=0; j<NUM_EJES; j++){
-                parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+                if(parametros.num_pasos[j] != 0){
+                    parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+                }else{
+                    parametros.periodo_pasos[j] = 0;
+                }
+                
             }
         }else{
             double tiempo = vector/(feedrate_desplazamiento);
             for(int j=0; j<NUM_EJES; j++){
-                parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+                if(parametros.num_pasos[j] != 0){
+                    parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+                }else{
+                    parametros.periodo_pasos[j] = 0;
+                }
             }
         }
-        
-
-
         break;
     
     default:
         FAIL_CALCULO_TRAYECTORIA(ERROR_INSTRUCCION_SIN_DESPLAZAMIENTO);
         break;
     }
+    *error = OK;
+    for(int i=0; i<NUM_EJES;i++ ){
+        if(aux[i] != 0.0){
+            posicion_actual[i] = aux[i];
+        }
+    }
+    return parametros;
 }

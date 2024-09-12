@@ -98,7 +98,6 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         bandera_comando |= 1<<GRUPO_MODAL_6;
                         break; 
                     case 28:
-                        
                         if((bandera_comando &= 1<<GRUPO_MODAL_0) != 0 ){
                             FAIL_INTERPRETE(ERROR_GRUPO_MODAL_CONFLICTO);
                         }
@@ -109,11 +108,12 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         
                         switch (valor_entero)
                         {
-                        case 28:
-                            instruccion_xyz->setInstruccion(DESPLAZAMIENTO_A_CASA);
-                            break;
+                            case 28:
+                                instruccion_xyz = new Instruccion();
+                                instruccion_xyz->setInstruccion(DESPLAZAMIENTO_A_CASA);
+                                
+                                break;
                         }
-                        
                         bandera_comando |= 1<<GRUPO_MODAL_0;
                         break; 
                     
@@ -228,7 +228,6 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
         (*inst)->valores.bandera_palabras = bandera_palabra;
         nuevas_instrucciones.push(*inst);
     }
-    
     return nuevas_instrucciones;
     
 

@@ -15,7 +15,7 @@
 
 //ERRORES EN EL CALCULO DE TRAYECTORIAS
 #define ERROR_INSTRUCCION_SIN_DESPLAZAMIENTO 7
-
+#define ERROR_TRAYECTORIA_FUERA_AREA 8
 
 
 std::string obtener_error(int error, std::string linea);

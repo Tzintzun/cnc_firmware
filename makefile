@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -Wextra
 
-SRCS = main.cpp maquina.cpp herramienta.cpp errores.cpp interprete.cpp actuadores.cpp trayectorias.cpp inih/ini.c inih/cpp/INIReader.cpp
+SRCS = main.cpp maquina.cpp herramienta.cpp errores.cpp interprete.cpp trayectorias.cpp inih/ini.c inih/cpp/INIReader.cpp
 OBJS = $(patsubst %.cpp, build/%.o, $(patsubst %.c, build/%.o, $(SRCS)))
 
 main.exe: $(OBJS) build/
