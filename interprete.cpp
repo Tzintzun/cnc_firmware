@@ -12,9 +12,10 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
     int bandera_palabra = 0;
     int bandera_comando = 0;
     int valor_N=0;
+    int tipo_instruccion = 0;
     std::list<Instruccion *> instrucciones_bloque;
-    Instruccion* instruccion_xyz = NULL;
-    Instruccion* aux = NULL;
+    Instruccion* instruccion_argumentos = new Instruccion();
+    Instruccion* aux;
 
     while(linea[indice_caracter] != '\0'){
 
@@ -32,7 +33,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
         }
 
         int valor_entero = std::round(valor);
-        int tipo_instruccion = 0;
+        
 
         switch (letra){
             case 'G':
@@ -47,16 +48,17 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                             FAIL_INTERPRETE(ERROR_MULTIPLES_INSTRUC_CON_ARGUMENTOS);
                         }
                         tipo_instruccion = INSTRUCCION_CON_ARGUMENTOS_XYZ;
-                        instruccion_xyz = new Instruccion();
+                        instruccion_argumentos = new Instruccion();
                         switch (valor_entero)
                         {
                             case 0:
-                                instruccion_xyz->setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE);
+                                instruccion_argumentos->setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE);
                                 break;
                             case 1:
-                                instruccion_xyz->setInstruccion(INTERPOLACION_LINEAL);
+                                instruccion_argumentos->setInstruccion(INTERPOLACION_LINEAL);
                                 break;
                             default:
+                                FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
                         }
                         bandera_comando |= 1<<GRUPO_MODAL_1;
@@ -68,12 +70,15 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         aux = new Instruccion();
                         switch (valor_entero)
                         {
-                        case 90:
-                            aux->setInstruccion(MODO_DISTANCIA_ABSOLUTO);
-                            break;
-                        case 91:
-                            aux->setInstruccion(MODO_DISTANCIA_INCREMENTAL);
-                            break;
+                            case 90:
+                                aux->setInstruccion(MODO_DISTANCIA_ABSOLUTO);
+                                break;
+                            case 91:
+                                aux->setInstruccion(MODO_DISTANCIA_INCREMENTAL);
+                                break;
+                            default:
+                                FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
+                                break;
                         }
                         
                         instrucciones_bloque.push_back(aux);
@@ -86,12 +91,15 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         aux = new Instruccion();
                         switch (valor_entero)
                         {
-                        case 20:
-                            aux->setInstruccion(CONF_UNIDADES_MILIMETROS);
-                            break;
-                        case 21:
-                            aux->setInstruccion(CONF_UNIDADES_PULGADAS);
-                            break;
+                            case 20:
+                                aux->setInstruccion(CONF_UNIDADES_MILIMETROS);
+                                break;
+                            case 21:
+                                aux->setInstruccion(CONF_UNIDADES_PULGADAS);
+                                break;
+                            default:
+                                FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
+                                break;
                         }
                         
                         instrucciones_bloque.push_back(aux);
@@ -109,9 +117,12 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         switch (valor_entero)
                         {
                             case 28:
-                                instruccion_xyz = new Instruccion();
-                                instruccion_xyz->setInstruccion(DESPLAZAMIENTO_A_CASA);
+                                instruccion_argumentos = new Instruccion();
+                                instruccion_argumentos->setInstruccion(DESPLAZAMIENTO_A_CASA);
                                 
+                                break;
+                            default:
+                                FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
                         }
                         bandera_comando |= 1<<GRUPO_MODAL_0;
@@ -131,12 +142,15 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         aux = new Instruccion();
                         switch (valor_entero)
                         {
-                        case 0:
-                            aux->setInstruccion(PAUSAR_PROGRAMA);
-                            break;
-                        case 2:
-                            aux->setInstruccion(FIN_PROGRAMA);
-                            break;
+                            case 0:
+                                aux->setInstruccion(PAUSAR_PROGRAMA);
+                                break;
+                            case 2:
+                                aux->setInstruccion(FIN_PROGRAMA);
+                                break;
+                            default:
+                                FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
+                                break;
                         }
                         
                         instrucciones_bloque.push_back(aux);
@@ -149,15 +163,18 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         aux = new Instruccion();
                         switch (valor_entero)
                         {
-                        case 3:
-                            aux->setInstruccion(ENCENDER_HERRAMIENTA_HORARIO);
-                            break;
-                        case 4:
-                            aux->setInstruccion(ENCENDER_HERRAMIENTA_ANTIHORARIO);
-                            break;
-                        case 5:
-                            aux->setInstruccion(DETENER_HERRAMIENTA);
-                            break;
+                            case 3:
+                                aux->setInstruccion(ENCENDER_HERRAMIENTA_HORARIO);
+                                break;
+                            case 4:
+                                aux->setInstruccion(ENCENDER_HERRAMIENTA_ANTIHORARIO);
+                                break;
+                            case 5:
+                                aux->setInstruccion(DETENER_HERRAMIENTA);
+                                break;
+                            default:
+                                FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
+                                break;
                         }
                         
                         instrucciones_bloque.push_back(aux);
@@ -179,8 +196,8 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                 if((bandera_palabra & F_PALABRA)){
                     FAIL_INTERPRETE(ERROR_ARGUMENTO_REPETIDO);
                 }
-                if(instruccion_xyz != NULL){
-                    instruccion_xyz->valores.f = valor;
+                if(instruccion_argumentos != NULL){
+                    instruccion_argumentos->valores.f = valor;
                     bandera_palabra |= F_PALABRA;
                 }
                 break;
@@ -188,8 +205,8 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                 if((bandera_palabra & X_PALABRA)){
                     FAIL_INTERPRETE(ERROR_ARGUMENTO_REPETIDO);
                 }
-                if(instruccion_xyz != NULL){
-                    instruccion_xyz->valores.x = valor;
+                if(instruccion_argumentos != NULL){
+                    instruccion_argumentos->valores.x = valor;
                     bandera_palabra |= X_PALABRA;
                 }
                 break;
@@ -197,8 +214,8 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                 if((bandera_palabra & Y_PALABRA)){
                     FAIL_INTERPRETE(ERROR_ARGUMENTO_REPETIDO);
                 }
-                if(instruccion_xyz != NULL){
-                    instruccion_xyz->valores.y = valor;
+                if(instruccion_argumentos != NULL){
+                    instruccion_argumentos->valores.y = valor;
                     bandera_palabra |= Y_PALABRA;
                 }
                 break;
@@ -206,8 +223,8 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                 if((bandera_palabra & Z_PALABRA)){
                     FAIL_INTERPRETE(ERROR_ARGUMENTO_REPETIDO);
                 }
-                if(instruccion_xyz != NULL){
-                    instruccion_xyz->valores.z = valor;
+                if(instruccion_argumentos != NULL){
+                    instruccion_argumentos->valores.z = valor;
                     bandera_palabra |= Z_PALABRA;
                 }
                 break;
@@ -217,15 +234,19 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
         }
         
     }
-    if(instruccion_xyz != NULL)
+    if(instruccion_argumentos->getInstruccion() != INSTRUCCION_NULA)
     {
-        instrucciones_bloque.push_back(instruccion_xyz);
+        instrucciones_bloque.push_back(instruccion_argumentos);
     }
     std::queue<Instruccion *> nuevas_instrucciones;
     for(std::list<Instruccion *>::iterator inst = instrucciones_bloque.begin(); 
         inst !=  instrucciones_bloque.end(); ++inst){
         (*inst)->valores.N = valor_N;
         (*inst)->valores.bandera_palabras = bandera_palabra;
+        if((*inst)->getInstruccion() == INSTRUCCION_NULA){
+            std::cout<<(*inst)->toString()<<std::endl;
+            FAIL_INTERPRETE(ERROR_BLOQUE_SIN_INSTRUCCION);
+        }
         nuevas_instrucciones.push(*inst);
     }
     return nuevas_instrucciones;
@@ -234,6 +255,10 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
     //return instruccion;
 }
 
+Instruccion::Instruccion(){
+    this->setInstruccion(INSTRUCCION_NULA);
+    memset(&(this->valores),0,sizeof(gcode_valores));
+}
 
 void Instruccion::setInstruccion(unsigned int  instruccion){
     this->instruccion = instruccion;
@@ -241,6 +266,20 @@ void Instruccion::setInstruccion(unsigned int  instruccion){
 
 unsigned int Instruccion::getInstruccion(){
     return this->instruccion;
+}
+
+std::string Instruccion::toString(){
+    std::ostringstream mensaje;
+
+    mensaje<<"Instruccion: "<<this->getInstruccion()<<"\tBanderas: ";
+    mensaje<<std::hex<<this->valores.bandera_palabras<<std::dec;
+    mensaje<<"\n\tX: "<<this->valores.x;
+    mensaje<<"\n\tY: "<<this->valores.y;
+    mensaje<<"\n\tZ: "<<this->valores.z;
+    mensaje<<"\n\tF: "<<this->valores.f;
+    mensaje<<"\n\tN: "<<this->valores.N;
+
+    return mensaje.str();
 }
 
 bool leer_flotante(std::string linea, int* indice, double* valor){
@@ -251,6 +290,9 @@ bool leer_flotante(std::string linea, int* indice, double* valor){
     //bool negativo = false;
     //bool decimal = false;
     
+    if(isdigit(linea[indice_aux])==0 && linea[indice_aux] != '-' && linea[indice_aux] != '+'){
+        return false;
+    }
 
     if(linea[indice_aux] == '-'){
         //negativo = true;

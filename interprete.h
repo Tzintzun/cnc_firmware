@@ -4,21 +4,17 @@
 #include "interprete.h"
 #include "errores.h"
 #include <iostream>
+#include <sstream> 
 #include <cmath>
 #include <string>
-#include <exception>
+#include <cstring>
 #include <queue>
 #include <list>
 
 #define FAIL_INTERPRETE(x) *error=x; return std::queue<Instruccion*>()
-class InterpreteExcepcion : public std::exception{
+class InterpreteExcepcion {
     public:
-        InterpreteExcepcion(std::string mensaje){
-            this->mensaje = mensaje;
-        }
-         const char* what() const noexcept override {
-            return mensaje.c_str();
-        }
+
     private:
     std::string mensaje;
 };
@@ -41,6 +37,8 @@ class Instruccion{
         gcode_valores valores;
         void setInstruccion(unsigned int instruccion);
         unsigned int getInstruccion();
+        Instruccion();
+        std::string toString();
 };
 
 class Interprete
