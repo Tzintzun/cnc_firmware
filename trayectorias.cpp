@@ -1,6 +1,8 @@
 #include "trayectorias.h"
 
 CalculadoraTrayectorias::CalculadoraTrayectorias(INIReader reader_conf){
+    
+    
     this->area_trabajo[0] = reader_conf.GetReal("MaquinaCNC", "MAX_X_DIM", MAX_X_DIS);
     this->area_trabajo[1] = reader_conf.GetReal("MaquinaCNC", "MAX_Y_DIM", MAX_Y_DIS);
     this->area_trabajo[2] = reader_conf.GetReal("MaquinaCNC", "MAX_Z_DIM", MAX_Z_DIS);
@@ -10,6 +12,7 @@ CalculadoraTrayectorias::CalculadoraTrayectorias(INIReader reader_conf){
     this->pasos_mm[2] = reader_conf.GetReal("Trayectorias", "PASOS_MM_Z", PASOS_Z_MM);
 
     this->feedrate_desplazamiento = reader_conf.GetReal("Trayectorias", "FEEDRATE", FEEDRATE);
+
 }
 
 std::string CalculadoraTrayectorias::toString(){
@@ -39,7 +42,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                 FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
             }
             double distancia = aux[j] - posicion_actual[j];
-            std::cout<<distancia<<std::endl;
+            //std::cout<<distancia<<std::endl;
             
             componentes[j] = distancia;
             vector += (distancia*distancia);
@@ -47,6 +50,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                 parametros.num_pasos[j] = std::fabs(distancia)*(this->pasos_mm[j]);
             }else{
                 parametros.num_pasos[j] = std::fabs(distancia)*MM_TO_INCH*(this->pasos_mm[j]);
+                std::cout<<std::fabs(distancia)*(this->pasos_mm[j])<<std::endl;
             }
             if( distancia > 0){
                 parametros.direccion[j] = true;
@@ -69,6 +73,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         tiempo = vector/(feedrate_desplazamiento); // (min/mm)*mm = min
                                                         // seg = 60*min;
                                                         // nanoseg = 1000000000*seg
+        std::cout<<tiempo<<std::endl;
         for(int j=0; j<NUM_EJES; j++){
             parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
         }
@@ -77,6 +82,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
 
         if(instruccion.valores.bandera_palabras & F_PALABRA && (instruccion.valores.f > 0.0)){ //configurar una velocidad minima;
             tiempo = vector/(instruccion.valores.f);
+            
             for(int j=0; j<NUM_EJES; j++){
                 if(parametros.num_pasos[j] != 0){
                     parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
@@ -87,6 +93,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             }
         }else{
             double tiempo = vector/(feedrate_desplazamiento);
+            std::cout<<tiempo<<std::endl;
             for(int j=0; j<NUM_EJES; j++){
                 if(parametros.num_pasos[j] != 0){
                     parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];

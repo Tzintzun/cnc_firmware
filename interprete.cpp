@@ -244,7 +244,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
         (*inst)->valores.N = valor_N;
         (*inst)->valores.bandera_palabras = bandera_palabra;
         if((*inst)->getInstruccion() == INSTRUCCION_NULA){
-            std::cout<<(*inst)->toString()<<std::endl;
+            //std::cout<<(*inst)->toString()<<std::endl;
             FAIL_INTERPRETE(ERROR_BLOQUE_SIN_INSTRUCCION);
         }
         nuevas_instrucciones.push(*inst);
