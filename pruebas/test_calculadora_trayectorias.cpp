@@ -146,7 +146,7 @@ int main(void){
         calculadora = new CalculadoraTrayectorias(reader);
         
         parametros_actuadores resultado = calculadora->calcular_trayectoria_lineal(prueba.instruccion, prueba.posicion_inicial, prueba.unidades, &error);
-        if(error == prueba.error_esperado){
+        if(error == prueba.error_esperado){     
             std::cout<<"TEST: OK";
         }else{
             std::cout<<"TEST: ERROR";

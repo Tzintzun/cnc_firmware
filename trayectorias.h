@@ -1,5 +1,5 @@
-#ifndef __ACTUADORES__
-#define __ACTUADORES__
+#ifndef __TRAYECTORIAS__
+#define __TRAYECTORIAS__
 
 #include <cstring>
 #include <cmath>

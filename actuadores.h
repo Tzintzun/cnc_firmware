@@ -1,18 +1,30 @@
 #ifndef __ACTUADORES__
 #define __ACTUADORES__
 
-#include <time.h>
-#include <signal.h>
+#include <ctime>
+#include <csignal>
+
+
 #include <map>
 
 #include "trayectorias.h"
 #include "configuracion.h"
 #include "inih/cpp/INIReader.h"
 
+typedef struct 
+{
+    
+}configuracion_actuadores;
+
+
+
 class ManipularActuadores{
     private:
-    std::map<int, configuracion_actuador> actuadores;
-    int pinout[NUM_EJES]; // {X,Y,Z}
+    std::map<int, configuracion_actuadores> actuadores;
+    int pin_eje[NUM_EJES];
+    int pin_dir_ejes[NUM_EJES];
+    int pin_habilitar_ejes;
+
     void signal_handler(int signum, siginfo_t *info, void context){
         if(info->si_value.sival_ptr){
             int id_timer = *(reinterpret_cast<int*>(info->si_value.sival_ptr));
@@ -30,18 +42,13 @@ class ManipularActuadores{
         }
         
     }
+
     public:
-    int ejecutar_movimiento();
+    int ejecutar_movimiento(parametros_actuadores parametros);
     ManipularActuadores(INIReader reader_config);
 
 };
 
-typedef struct 
-{
-    parametros_actuadores parametros;
-    int pin;
-    bool estado;
-}configuracion_actuador;
 
 
 #endif
