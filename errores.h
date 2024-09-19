@@ -19,6 +19,11 @@
 #define ERROR_TRAYECTORIA_FUERA_AREA 9
 
 
+//ERRORES MANIPULACION DE ACTUADORES
+#define ERROR_SENIAL_NO_CREADA 10
+#define ERROR_TIMER_NO_CREADO 11
+#define ERROR_TIMER_NO_CONFIGURADO 12
+
 std::string obtener_error(int error, std::string linea);
 
 #endif
