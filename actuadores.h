@@ -4,6 +4,9 @@
 #include <ctime>
 #include <csignal>
 #include <map>
+#include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "trayectorias.h"
 #include "configuracion.h"
@@ -15,25 +18,22 @@
 
 typedef struct 
 {
-    
-}configuracion_actuadores;
+    long numero_pasos;
+    long periodo;
+    int pin;
+    timer_t *timer;
+}configuracion_actuador;
 
 
 
 class ManipularActuadores{
     private:
-    std::map<int, configuracion_actuadores> actuadores;
+    std::map<int, configuracion_actuador *> actuadores;
     int pin_eje[NUM_EJES];
     int pin_dir_ejes[NUM_EJES];
     int pin_habilitar_ejes;
-
-    void signal_handler(int signum, siginfo_t *info, void context){
-        int timer_id = -1;
-        if(info->si_value.sival_ptr){
-            timer_id = *(reinterpret_cast<int*>(info->si_value.sival_ptr));
-        }
-        
-    }
+    bool temporizadores_listos;
+    void signal_handler(int signum, siginfo_t *info, void context);
 
     public:
     int ejecutar_movimiento(parametros_actuadores parametros);

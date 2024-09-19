@@ -10,11 +10,16 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     this->pin_dir_ejes[2] = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_DIR_EJE_Z", PIN_DIR_EJE_Z);
 
     this->pin_habilitar_ejes = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_HABILITAR_EJES", PIN_HABILITAR_EJES);
+    this->temporizadores_listos = false;
 }
 
 
 int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
+    /*Dehabilitamos señales*/
+    HABILITAR_EJES(pin_habilitar_ejes, LOW);
+    temporizadores_listos = false;
+    /*Configuramos la señal*/
     struct sigaction *senial_timer;
     senial_timer = (struct sigaction *)malloc(sizeof(struct sigaction));
     senial_timer->sa_flags = SA_SIGINFO;
@@ -24,6 +29,18 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     if(sigaction(SIGRTMIN, senial_timer, nullptr) == -1){
         FAIL_MANIPULACION_ACTUADOR(ERROR_SENIAL_NO_CREADA);
     }
+
+    /*Configuramos las señales de control*/
+
+    for (int i=0;i<NUM_EJES;i++){
+        if(parametros.direccion[i]){
+            CAMBIAR_DIRECCION_EJE(pin_eje[i],HIGH);
+        }else{
+            CAMBIAR_DIRECCION_EJE(pin_eje[i],LOW);
+        }
+    }
+    
+    /*Configuramos los temporizadores*/
 
     for(int i=0; i<NUM_EJES;i++){
         
@@ -45,13 +62,65 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         struct itimerspec *its;
         its = (struct itimerspec *)malloc(sizeof(struct itimerspec));
         its->it_value.tv_sec = 0;
-        its->it_value.tv_nsec = 0;
+        its->it_value.tv_nsec = 10000000;
         its->it_interval.tv_sec = 0;
         its->it_interval.tv_nsec = parametros.periodo_pasos[i];
 
+        configuracion_actuador *configuracion = new configuracion_actuador;
+        configuracion->numero_pasos = parametros.num_pasos[i];
+        configuracion->periodo = parametros.periodo_pasos[i];
+        configuracion->timer = timer;
+        actuadores[timer_id] = configuracion;
+
+        
         if(timer_settime(timer, 0, its, nullptr) == -1){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_CONFIGURADO);
         }
 
     }
+    HABILITAR_EJES(pin_habilitar_ejes, HIGH);
+    temporizadores_listos = true;
+
+    
+    /*Esperamos a que los pasos terminen*/
+    while (true)
+    {
+        int pasos_totales_restantes = 0;
+        for(int i=0;i<NUM_EJES;i++){
+            pasos_totales_restantes += actuadores[i]->numero_pasos;
+        }
+        if(pasos_totales_restantes == 0){
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::nanoseconds(500000000));
+    }
+
+    std::map<int, configuracion_actuador *>::iterator it;
+    for (it = actuadores.begin(); it != actuadores.end(); ++it){
+        if(timer_delete(*(actuadores[it->first]->timer)) == -1){
+            FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_DESTRUIDO);
+        }
+    }
+
+    return OK;
 }
+
+void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void context){
+    int timer_id = -1;
+    if(info->si_value.sival_ptr){
+        timer_id = *(reinterpret_cast<int*>(info->si_value.sival_ptr));
+    }
+    if(timer_id == -1){
+        std::cout<<"Timer no identidicado";
+    }
+    if(this->temporizadores_listos){
+        configuracion_actuador *actuador = this->actuadores[timer_id];
+        if(actuador->numero_pasos>0){
+            EJECUTAR_PASO(actuador->pin);
+            actuador->numero_pasos -= 1;
+        }
+    }
+    
+
+}
+

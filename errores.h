@@ -23,6 +23,7 @@
 #define ERROR_SENIAL_NO_CREADA 10
 #define ERROR_TIMER_NO_CREADO 11
 #define ERROR_TIMER_NO_CONFIGURADO 12
+#define ERROR_TIMER_NO_DESTRUIDO 13
 
 std::string obtener_error(int error, std::string linea);
 

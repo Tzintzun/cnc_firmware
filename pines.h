@@ -21,7 +21,7 @@
 
 #define EJECUTAR_PASO(x)  (digitalWrite(x, HIGH); digitalWrite(x, LOW))
 #define CAMBIAR_DIRECCION_EJE(x,y) (digitalWrite((x),(y)))
-#define HABILITAR_EJES(x) (digitalWrite(PIN_HABILITAR_EJES, (x)))
+#define HABILITAR_EJES(x,y) (digitalWrite((x), (y)))
 
 #define CAMBIAR_DIRECCION_HERRAMIENTA(x) (digitalWrite(PIN_DIR_HERRAMIENTA, (x)))
 #define HBILITAR_HERRAMIENTA(x) (digitalWrite(PIN_HABILITAR_HERRAMIENTA, (x)))
