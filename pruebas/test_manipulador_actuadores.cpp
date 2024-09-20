@@ -30,7 +30,7 @@ int main(void){
     {
         int error = manipulador->ejecutar_movimiento(parametros_prueba);
         if( error != OK){
-            std::cout<<obtener_error(error)<<std::endl;
+            std::cout<<obtener_error(error, "TEST ManipularActuadores")<<std::endl;
         }
 
         std::cin.get();
