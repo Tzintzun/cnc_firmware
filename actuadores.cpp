@@ -13,9 +13,10 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     this->pin_habilitar_ejes = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_HABILITAR_EJES", PIN_HABILITAR_EJES);
     temporizadores_listos = false;
 
-    wiringPiSetupGpio();
-
+    wiringPiSetup () ;
+    std::cout<<"Configurando modo pines"<<std::endl;
     for(int i = 0; i<NUM_EJES;i++){
+        std::cout<<"\t"<<pin_eje[i]<<" "<<pin_dir_ejes[i]<<std::endl;
         pinMode(pin_eje[i], OUTPUT);
         pinMode(pin_dir_ejes[i], OUTPUT);
     }
