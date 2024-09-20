@@ -23,6 +23,7 @@ typedef struct
     long periodo;
     int pin;
     timer_t *timer;
+    bool estado;
 }configuracion_actuador;
 
 

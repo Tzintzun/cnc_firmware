@@ -26,6 +26,8 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
 
     pinMode(pin_habilitar_ejes, OUTPUT);
     digitalWrite(pin_habilitar_ejes, LOW);
+
+    std::cin.get();
 }
 
 
@@ -91,6 +93,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         configuracion->numero_pasos = parametros.num_pasos[i];
         configuracion->periodo = parametros.periodo_pasos[i];
         configuracion->timer = timer;
+        configuracion->estado = false;
+        configuracion->pin = pin_eje[i];
         actuadores[timer_id] = configuracion;
 
         
@@ -140,11 +144,13 @@ void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void *cont
         std::cout<<"Timer no identidicado";
     }
     if(temporizadores_listos){
-        std::cout<<"EJECUTANDO"<<std::endl;
+        
 
         configuracion_actuador *actuador = actuadores[timer_id];
         if(actuador->numero_pasos>0){
-            EJECUTAR_PASO(actuador->pin);
+            std::cout<<"EJECUTANDO "<< actuador->estado <<actuador->pin<<std::endl;
+            digitalWrite(actuador->pin, actuador->estado?HIGH:LOW);
+            actuador->estado = !(actuador->estado);
             actuador->numero_pasos -= 1;
         }
     }
