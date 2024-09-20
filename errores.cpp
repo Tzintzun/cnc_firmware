@@ -30,5 +30,5 @@ std::string obtener_error(int error, std::string linea){
     default:
         break;
     }
-    return "ERROR";
+    return "ERROR" + std::to_string(error);
 }
