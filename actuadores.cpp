@@ -77,7 +77,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
         sig_ev->sigev_notify = SIGEV_SIGNAL;
         sig_ev->sigev_signo = SIGRTMIN;
-        sig_ev->sigev_value.sival_ptr = &timer_id;
+        sig_ev->sigev_value.sival_ptr = timer_id;
 
         if(timer_create(CLOCK_REALTIME, sig_ev, timer) == -1){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_CREADO);
@@ -96,9 +96,9 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         configuracion->timer = timer;
         configuracion->estado = false;
         configuracion->pin = pin_eje[i];
-        actuadores[timer_id] = configuracion;
+        actuadores[*timer_id] = configuracion;
         std::cout<<"PIN "<<pin_eje[i]<<std::endl;
-        std::cout<<"TIMER ID "<<timer_id<<std::endl;
+        std::cout<<"TIMER ID "<<*timer_id<<std::endl;
         std::cin.get();
         if(timer_settime(*timer, 0, its, nullptr) == -1){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_CONFIGURADO);
