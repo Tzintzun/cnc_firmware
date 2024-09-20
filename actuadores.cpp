@@ -96,8 +96,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         configuracion->estado = false;
         configuracion->pin = pin_eje[i];
         actuadores[timer_id] = configuracion;
-
-        
+        std::cout<<"PIN"<<pin_eje[i]<<std::endl;
+        std::cin.get();
         if(timer_settime(*timer, 0, its, nullptr) == -1){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_CONFIGURADO);
         }
@@ -135,7 +135,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
 void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void *context){
 
-    std::cout<<"Entrando al signal_handler"<<std::endl;
+    
     int timer_id = -1;
     if(info->si_value.sival_ptr){
         timer_id = *(reinterpret_cast<int*>(info->si_value.sival_ptr));
@@ -148,7 +148,7 @@ void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void *cont
 
         configuracion_actuador *actuador = actuadores[timer_id];
         if(actuador->numero_pasos>0){
-            std::cout<<"EJECUTANDO "<< actuador->estado <<actuador->pin<<std::endl;
+            std::cout<<"EJECUTANDO "<< actuador->estado<< " " <<actuador->pin<<std::endl;
             digitalWrite(actuador->pin, actuador->estado?HIGH:LOW);
             actuador->estado = !(actuador->estado);
             actuador->numero_pasos -= 1;
