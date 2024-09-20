@@ -29,7 +29,7 @@ int main(void){
     while (true)
     {
         int error = manipulador->ejecutar_movimiento(parametros_prueba);
-        if( error == OK){
+        if( error != OK){
             std::cout<<obtener_error(error)<<std::endl;
         }
 
