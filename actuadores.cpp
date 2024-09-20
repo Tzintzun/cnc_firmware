@@ -96,7 +96,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         configuracion->estado = false;
         configuracion->pin = pin_eje[i];
         actuadores[timer_id] = configuracion;
-        std::cout<<"PIN"<<pin_eje[i]<<std::endl;
+        std::cout<<"PIN "<<pin_eje[i]<<std::endl;
+        std::cout<<"TIMER ID "<<timer_id<<std::endl;
         std::cin.get();
         if(timer_settime(*timer, 0, its, nullptr) == -1){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_CONFIGURADO);
