@@ -1,5 +1,6 @@
 #include "actuadores.h"
-
+std::map<int, configuracion_actuador *> ManipularActuadores::actuadores;
+bool ManipularActuadores::temporizadores_listos = false;
 ManipularActuadores::ManipularActuadores(INIReader reader_config){
     this->pin_eje[0] = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_EJE_X", PIN_EJE_X);
     this->pin_eje[1] = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_EJE_Y", PIN_EJE_Y);
@@ -10,7 +11,7 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     this->pin_dir_ejes[2] = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_DIR_EJE_Z", PIN_DIR_EJE_Z);
 
     this->pin_habilitar_ejes = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_HABILITAR_EJES", PIN_HABILITAR_EJES);
-    *temporizadores_listos = false;
+    temporizadores_listos = false;
 
     wiringPiSetupGpio();
 
@@ -27,7 +28,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
     /*Dehabilitamos señales*/
     HABILITAR_EJES(pin_habilitar_ejes, LOW);
-    *temporizadores_listos = false;
+    temporizadores_listos = false;
     /*Configuramos la señal*/
     struct sigaction *senial_timer;
     senial_timer = (struct sigaction *)malloc(sizeof(struct sigaction));
@@ -88,7 +89,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
     }
     HABILITAR_EJES(pin_habilitar_ejes, HIGH);
-    *temporizadores_listos = true;
+    temporizadores_listos = true;
 
     
     /*Esperamos a que los pasos terminen*/
@@ -122,7 +123,7 @@ void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void *cont
     if(timer_id == -1){
         std::cout<<"Timer no identidicado";
     }
-    if(*temporizadores_listos){
+    if(temporizadores_listos){
         configuracion_actuador *actuador = actuadores[timer_id];
         if(actuador->numero_pasos>0){
             EJECUTAR_PASO(actuador->pin);
