@@ -47,6 +47,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     std::cout<<"Configurando direccion de pines"<<std::endl;
 
     for (int i=0;i<NUM_EJES;i++){
+        std::cout<<"\t"<<parametros.direccion[i]<<std::endl;
         if(parametros.direccion[i]){
             CAMBIAR_DIRECCION_EJE(pin_eje[i],HIGH);
         }else{
@@ -88,7 +89,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         actuadores[timer_id] = configuracion;
 
         
-        if(timer_settime(timer, 0, its, nullptr) == -1){
+        if(timer_settime(*timer, 0, its, nullptr) == -1){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_CONFIGURADO);
         }
 

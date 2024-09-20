@@ -15,7 +15,7 @@
 typedef struct 
 {
     long num_pasos[NUM_EJES];
-    unsigned long periodo_pasos[NUM_EJES];
+    long periodo_pasos[NUM_EJES];
     bool direccion[NUM_EJES]; //false: direccio antihorario; true: direcion horario;
 }parametros_actuadores;
 
