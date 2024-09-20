@@ -19,9 +19,13 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
         std::cout<<"\t"<<pin_eje[i]<<" "<<pin_dir_ejes[i]<<std::endl;
         pinMode(pin_eje[i], OUTPUT);
         pinMode(pin_dir_ejes[i], OUTPUT);
+
+        digitalWrite(pin_eje[i], LOW);
+        digitalWrite(pin_dir_ejes[i], LOW);
     }
 
     pinMode(pin_habilitar_ejes, OUTPUT);
+    digitalWrite(pin_habilitar_ejes, LOW);
 }
 
 
