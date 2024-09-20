@@ -7,6 +7,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <wiringPi.h>
 
 #include "trayectorias.h"
 #include "configuracion.h"
@@ -28,12 +29,12 @@ typedef struct
 
 class ManipularActuadores{
     private:
-    std::map<int, configuracion_actuador *> actuadores;
+    static std::map<int, configuracion_actuador *> actuadores;
     int pin_eje[NUM_EJES];
     int pin_dir_ejes[NUM_EJES];
     int pin_habilitar_ejes;
-    bool temporizadores_listos;
-    void signal_handler(int signum, siginfo_t *info, void context);
+    static bool temporizadores_listos;
+    static void signal_handler(int signum, siginfo_t *info, void *context);
 
     public:
     int ejecutar_movimiento(parametros_actuadores parametros);

@@ -10,9 +10,6 @@
 #define MAX_Y_DIS 170 //maxima distancia que se puede recorrer en Y
 #define MAX_Z_DIS 45 //maxima distancia que se puede recorrer en Z
 
-#define PIN_EJE_X 11
-#define PIN_EJE_Y 12
-#define PIN_EJE_Z 13
 
 #define MM_TO_INCH 25.4
 
