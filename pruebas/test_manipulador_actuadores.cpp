@@ -26,15 +26,14 @@ int main(void){
         parametros_prueba.periodo_pasos[i] = 250000000;
     }
 
-    while (true)
-    {
-        int error = manipulador->ejecutar_movimiento(parametros_prueba);
-        if( error != OK){
-            std::cout<<obtener_error(error, "TEST ManipularActuadores")<<std::endl;
-        }
-
-        std::cin.get();
-    }
     
+    int error = manipulador->ejecutar_movimiento(parametros_prueba);
+    if( error != OK){
+        std::cout<<obtener_error(error, "TEST ManipularActuadores")<<std::endl;
+    }
 
+    std::cout<<"FIN TEST ManipularActuadores"<<std::endl;
+    
+    
+    return 0;
 }

@@ -131,7 +131,14 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_DESTRUIDO);
         }
     }
-
+    
+    /*Desactivando actuadores*/
+    for(int i = 0; i<NUM_EJES;i++){
+        
+        digitalWrite(pin_eje[i], LOW);
+        digitalWrite(pin_dir_ejes[i], LOW);
+    }
+    digitalWrite(pin_habilitar_ejes, LOW);
     return OK;
 }
 
