@@ -16,8 +16,8 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     wiringPiSetupGpio();
 
     for(int i = 0; i<NUM_EJES;i++){
-	pinMode(pin_eje[i], OUTPUT);
-	pinMode(pin_dir_ejes[i], OUTPUT);
+        pinMode(pin_eje[i], OUTPUT);
+        pinMode(pin_dir_ejes[i], OUTPUT);
     }
 
     pinMode(pin_habilitar_ejes, OUTPUT);
@@ -30,6 +30,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     HABILITAR_EJES(pin_habilitar_ejes, LOW);
     temporizadores_listos = false;
     /*Configuramos la señal*/
+
+    std::cout<<"Configurando señal"<<std::endl;
     struct sigaction *senial_timer;
     senial_timer = (struct sigaction *)malloc(sizeof(struct sigaction));
     senial_timer->sa_flags = SA_SIGINFO;
@@ -42,6 +44,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
     /*Configuramos las señales de control*/
 
+    std::cout<<"Configurando direccion de pines"<<std::endl;
+
     for (int i=0;i<NUM_EJES;i++){
         if(parametros.direccion[i]){
             CAMBIAR_DIRECCION_EJE(pin_eje[i],HIGH);
@@ -51,6 +55,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     }
     
     /*Configuramos los temporizadores*/
+    std::cout<<"Configurando temporizadores"<<std::endl;
 
     for(int i=0; i<NUM_EJES;i++){
         
@@ -93,6 +98,9 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
     
     /*Esperamos a que los pasos terminen*/
+
+    std::cout<<"ESPERANDO..."<<std::endl;
+
     while (true)
     {
         int pasos_totales_restantes = 0;
@@ -116,6 +124,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 }
 
 void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void *context){
+
+    std::cout<<"Entrando al signal_handler"<<std::endl;
     int timer_id = -1;
     if(info->si_value.sival_ptr){
         timer_id = *(reinterpret_cast<int*>(info->si_value.sival_ptr));
@@ -124,6 +134,8 @@ void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void *cont
         std::cout<<"Timer no identidicado";
     }
     if(temporizadores_listos){
+        std::cout<<"EJECUTANDO"<<std::endl;
+
         configuracion_actuador *actuador = actuadores[timer_id];
         if(actuador->numero_pasos>0){
             EJECUTAR_PASO(actuador->pin);
