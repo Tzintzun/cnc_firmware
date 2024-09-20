@@ -7,7 +7,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-//#include <wiringPi.h>
+#include <wiringPi.h>
 
 #include "inih/cpp/INIReader.h"
 #include "trayectorias.h"
