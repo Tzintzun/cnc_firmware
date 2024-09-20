@@ -19,7 +19,7 @@
 #define PIN_HABILITAR_HERRAMIENTA 25
 #define PIN_DIR_HERRAMIENTA 27
 
-#define EJECUTAR_PASO(x)  (digitalWrite(x, HIGH)); delay(1); (digitalWrite(x, LOW))
+#define EJECUTAR_PASO(x)  (digitalWrite(x, HIGH));  (digitalWrite(x, LOW))
 #define CAMBIAR_DIRECCION_EJE(x,y) (digitalWrite((x),(y)))
 #define HABILITAR_EJES(x,y) (digitalWrite((x), (y)))
 

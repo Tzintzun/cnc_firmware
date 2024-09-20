@@ -1,3 +1,5 @@
+/*Compilacion: g++ inih/ini.c inih/cpp/INIReader.cpp trayectorias.cpp actuadores.cpp interprete.cpp errores.cpp pruebas/test_manipulador_actuadores.cpp -o pruebas/test_manipulador_actuadores.exe -l wiringPi*/
+
 #include <iostream>
 
 
