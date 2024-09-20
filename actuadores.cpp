@@ -72,7 +72,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         timer = new timer_t;
         struct sigevent *sig_ev;
         sig_ev = (struct sigevent *)malloc(sizeof(struct sigevent));
-        int timer_id = i;
+        int *timer_id = new int;
+        *timer_id = i;
 
         sig_ev->sigev_notify = SIGEV_SIGNAL;
         sig_ev->sigev_signo = SIGRTMIN;
