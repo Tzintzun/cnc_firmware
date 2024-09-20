@@ -27,7 +27,7 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     pinMode(pin_habilitar_ejes, OUTPUT);
     digitalWrite(pin_habilitar_ejes, LOW);
 
-    std::cin.get();
+    
 }
 
 
@@ -99,7 +99,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         actuadores[*timer_id] = configuracion;
         std::cout<<"PIN "<<pin_eje[i]<<std::endl;
         std::cout<<"TIMER ID "<<*timer_id<<std::endl;
-        std::cin.get();
+        
         if(timer_settime(*timer, 0, its, nullptr) == -1){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_CONFIGURADO);
         }
