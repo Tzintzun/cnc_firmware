@@ -19,7 +19,7 @@ class MaquinaCNC{
    
     double dimenciones_xyz[NUM_EJES];
     bool sistema_unidades; // G20/G21 mm/pulgadas false/true
-    bool modo_desplazamiento; //G90/G91 deplazamiento absoluto o relativo
+    bool modo_desplazamiento; //G90/G91 deplazamiento absoluto(True) o relativo(False)
     unsigned long numero_lineas;
 
     Herramienta *router;

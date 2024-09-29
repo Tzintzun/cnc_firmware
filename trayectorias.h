@@ -25,7 +25,7 @@ class CalculadoraTrayectorias{
     double area_trabajo [NUM_EJES];
     double feedrate_desplazamiento;
     public:
-    parametros_actuadores calcular_trayectoria_lineal(Instruccion instruccion, double *posicion, bool unidades, int* error);
+    parametros_actuadores calcular_trayectoria_lineal(Instruccion instruccion, double *posicion, bool unidades, bool sistema_cordenadas, int* error);
     CalculadoraTrayectorias(INIReader reader_conf);
     std::string toString();
     

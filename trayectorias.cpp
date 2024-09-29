@@ -24,7 +24,7 @@ std::string CalculadoraTrayectorias::toString(){
     return calculadora;
 }
 
-parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instruccion instruccion, double *posicion_actual, bool unidades, int *error){
+parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instruccion instruccion, double *posicion_actual, bool unidades, bool sistema_cordenadas, int *error){
     parametros_actuadores parametros;
     gcode_valores valores = instruccion.valores;
     double *aux = (double *)&valores;
@@ -38,10 +38,20 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         
         
         if((valores.bandera_palabras & i) != 0){
-            if(aux[j] >= area_trabajo[j]){
-                FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
+            
+            double distancia = 0.0;
+            if(sistema_cordenadas){
+                distancia = aux[j] - posicion_actual[j];
+                if(aux[j] >= area_trabajo[j]){
+                    FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
+                }
+            }else{
+                distancia = aux[j];
+                if(aux[j]+posicion_actual[j] >= area_trabajo[j]){
+                    FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
+                }
             }
-            double distancia = aux[j] - posicion_actual[j];
+            
             //std::cout<<distancia<<std::endl;
             
             componentes[j] = distancia;
@@ -81,7 +91,12 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     case INTERPOLACION_LINEAL:
 
         if(instruccion.valores.bandera_palabras & F_PALABRA && (instruccion.valores.f > 0.0)){ //configurar una velocidad minima;
-            tiempo = vector/(instruccion.valores.f);
+            if(!unidades){
+                tiempo = vector/(instruccion.valores.f);
+            }else{
+                tiempo = vector/(instruccion.valores.f*MM_TO_INCH);
+            }
+            
             
             for(int j=0; j<NUM_EJES; j++){
                 if(parametros.num_pasos[j] != 0){
@@ -111,7 +126,12 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     *error = OK;
     for(int i=0; i<NUM_EJES;i++ ){
         if(aux[i] != 0.0){
-            posicion_actual[i] = aux[i];
+            if(sistema_cordenadas){
+                posicion_actual[i] = aux[i];
+            }else{
+                posicion_actual[i] += aux[i];
+            }
+            
         }
     }
     return parametros;
