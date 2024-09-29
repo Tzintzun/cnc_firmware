@@ -1,7 +1,7 @@
 /*Compilacion: g++ inih/ini.c inih/cpp/INIReader.cpp trayectorias.cpp actuadores.cpp interprete.cpp errores.cpp pruebas/test_manipulador_actuadores.cpp -o pruebas/test_manipulador_actuadores.exe -l wiringPi*/
 
 #include <iostream>
-
+#include <cmath>
 
 
 #include "../inih/cpp/INIReader.h"
@@ -24,8 +24,8 @@ int main(void){
     parametros_actuadores parametros_prueba;
     for(int i=0; i<NUM_EJES; i++){
         parametros_prueba.direccion[i] = true;
-        parametros_prueba.num_pasos[i] = 20;
-        parametros_prueba.periodo_pasos[i] = 2500000000;
+        parametros_prueba.num_pasos[i] = 200*(i+1);
+        parametros_prueba.periodo_pasos[i] = (long)floorl(250000000L/(i+1));
     }
 
     

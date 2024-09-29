@@ -86,7 +86,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         its = (struct itimerspec *)malloc(sizeof(struct itimerspec));
         its->it_value.tv_sec = 0;
         its->it_value.tv_nsec = 10000000;
-        its->it_interval.tv_sec = (unsigned long)std::floor(parametros.periodo_pasos[i]/1000000000);
+        its->it_interval.tv_sec = (long)floorl(parametros.periodo_pasos[i]/1000000000);
         its->it_interval.tv_nsec = (long)(parametros.periodo_pasos[i]%1000000000);
 
         configuracion_actuador *configuracion = new configuracion_actuador;
