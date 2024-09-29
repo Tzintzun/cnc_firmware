@@ -26,7 +26,7 @@
 #define CONFIGURAR_PIN_SALIDA(x) (pinMode((x), OUTPUT)); (pullUpDnControl((x),PUD_DOWN))
 #define DESHABILITAR_PIN(x) (digitalWrite((x), LOW))
 #define HABILITAR_PIN(x) (digitalWrite((x), HIGH))
-#define EJECUTAR_PASO(x)  (digitalWrite(x, HIGH));  (digitalWrite(x, LOW))
+#define EJECUTAR_PASO(x)  (digitalWrite(x, HIGH));  (delay(100)); (digitalWrite(x, LOW))
 #define CAMBIAR_DIRECCION_EJE(x,y) (digitalWrite((x),(y)))
 #define HABILITAR_EJES(x) (digitalWrite((x), LOW))
 #define DESHABILITAR_EJES(x) (digitalWrite((x), HIGH))
