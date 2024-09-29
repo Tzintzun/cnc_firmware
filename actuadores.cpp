@@ -89,6 +89,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         its->it_interval.tv_sec = (long)floorl(parametros.periodo_pasos[i]/1000000000);
         its->it_interval.tv_nsec = (long)(parametros.periodo_pasos[i]%1000000000);
 
+        std::cout<<"PeriodoPasos: "<< parametros.periodo_pasos[i]<<std::endl;
+
         configuracion_actuador *configuracion = new configuracion_actuador;
         configuracion->numero_pasos = parametros.num_pasos[i];
         configuracion->periodo = parametros.periodo_pasos[i];
