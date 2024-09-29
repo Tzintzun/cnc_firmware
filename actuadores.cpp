@@ -14,18 +14,17 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     temporizadores_listos = false;
 
     wiringPiSetup () ;
-    std::cout<<"Configurando modo pines"<<std::endl;
+    //std::cout<<"Configurando modo pines"<<std::endl;
     for(int i = 0; i<NUM_EJES;i++){
-        std::cout<<"\t"<<pin_eje[i]<<" "<<pin_dir_ejes[i]<<std::endl;
-        pinMode(pin_eje[i], OUTPUT);
-        pinMode(pin_dir_ejes[i], OUTPUT);
-
-        digitalWrite(pin_eje[i], LOW);
-        digitalWrite(pin_dir_ejes[i], LOW);
+        //std::cout<<"\t"<<pin_eje[i]<<" "<<pin_dir_ejes[i]<<std::endl;
+        CONFIGURAR_PIN_SALIDA(pin_eje[i]);
+        CONFIGURAR_PIN_SALIDA(pin_dir_ejes[i]);
+        DESHABILITAR_PIN(pin_eje[i]);
+        DESHABILITAR_PIN(pin_dir_ejes[i]);
     }
 
-    pinMode(pin_habilitar_ejes, OUTPUT);
-    digitalWrite(pin_habilitar_ejes, LOW);
+    CONFIGURAR_PIN_SALIDA(pin_habilitar_ejes);
+    DESHABILITAR_EJES(pin_habilitar_ejes);
 
     
 }
@@ -34,7 +33,7 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
 int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
     /*Dehabilitamos señales*/
-    HABILITAR_EJES(pin_habilitar_ejes, LOW);
+    DESHABILITAR_EJES(pin_habilitar_ejes);
     temporizadores_listos = false;
     /*Configuramos la señal*/
 
@@ -105,7 +104,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         }
 
     }
-    HABILITAR_EJES(pin_habilitar_ejes, HIGH);
+    HABILITAR_EJES(pin_habilitar_ejes);
     temporizadores_listos = true;
 
     
@@ -135,10 +134,9 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     /*Desactivando actuadores*/
     for(int i = 0; i<NUM_EJES;i++){
         
-        digitalWrite(pin_eje[i], LOW);
-        digitalWrite(pin_dir_ejes[i], LOW);
+        DESHABILITAR_PIN(pin_eje[i]);
     }
-    digitalWrite(pin_habilitar_ejes, LOW);
+    DESHABILITAR_EJES(pin_habilitar_ejes);
     return OK;
 }
 
