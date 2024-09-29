@@ -25,7 +25,7 @@ int main(void){
     for(int i=0; i<NUM_EJES; i++){
         parametros_prueba.direccion[i] = true;
         parametros_prueba.num_pasos[i] = 200*(i+1);
-        parametros_prueba.periodo_pasos[i] = (long)floorl(250000000L/(i+1));
+        parametros_prueba.periodo_pasos[i] = (long)floorl(500000000L/(i+1));
         std::cout<<"PASOS: "<<parametros_prueba.num_pasos[i]<<std::endl;
     }
 
