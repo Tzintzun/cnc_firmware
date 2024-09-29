@@ -25,7 +25,7 @@ int main(void){
     for(int i=0; i<NUM_EJES; i++){
         parametros_prueba.direccion[i] = true;
         parametros_prueba.num_pasos[i] = 20;
-        parametros_prueba.periodo_pasos[i] = 250000000;
+        parametros_prueba.periodo_pasos[i] = 2500000000;
     }
 
     

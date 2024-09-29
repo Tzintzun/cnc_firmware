@@ -1,6 +1,7 @@
 #ifndef __ACTUADORES__
 #define __ACTUADORES__
 
+#include <cmath>
 #include <ctime>
 #include <csignal>
 #include <map>
