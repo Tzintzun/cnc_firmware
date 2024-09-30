@@ -42,6 +42,9 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             double distancia = 0.0;
             if(sistema_cordenadas){
                 distancia = aux[j] - posicion_actual[j];
+                if(distancia == -0){
+                    distancia = 0;
+                }
                 if(aux[j] >= area_trabajo[j]){
                     FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
                 }
@@ -66,7 +69,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                 parametros.direccion[j] = true;
             }else if(distancia < 0){
                 parametros.direccion[j] = false;
-            }else{
+            }else if( distancia == 0){
                 parametros.num_pasos[j] = 0;
             }
         }else{
@@ -85,7 +88,12 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                                                         // nanoseg = 1000000000*seg
         std::cout<<tiempo<<std::endl;
         for(int j=0; j<NUM_EJES; j++){
-            parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+            if(parametros.num_pasos[j] != 0){
+                parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+            }else{
+                parametros.periodo_pasos[j] = 0;
+            }
+            
         }
         break;
     case INTERPOLACION_LINEAL:
