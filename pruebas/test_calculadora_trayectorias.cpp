@@ -100,7 +100,7 @@ int main(void){
     for ( PruebaTrayectoria& prueba : pruebas_exito) {
         int error = OK;
         calculadora = new CalculadoraTrayectorias(reader);
-        parametros_actuadores resultado = calculadora->calcular_trayectoria_lineal(prueba.instruccion, prueba.posicion_inicial, prueba.unidades, &error);
+        parametros_actuadores resultado = calculadora->calcular_trayectoria_lineal(prueba.instruccion, prueba.posicion_inicial, prueba.unidades, true, &error);
         
         if(error == OK){
             std::cout<<prueba.instruccion.toString()<<std::endl;
@@ -145,7 +145,7 @@ int main(void){
         int error = OK;
         calculadora = new CalculadoraTrayectorias(reader);
         
-        parametros_actuadores resultado = calculadora->calcular_trayectoria_lineal(prueba.instruccion, prueba.posicion_inicial, prueba.unidades, &error);
+        parametros_actuadores resultado = calculadora->calcular_trayectoria_lineal(prueba.instruccion, prueba.posicion_inicial, prueba.unidades, true, &error);
         if(error == prueba.error_esperado){     
             std::cout<<"TEST: OK";
         }else{
