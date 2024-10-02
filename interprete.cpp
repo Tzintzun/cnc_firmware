@@ -250,9 +250,6 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
         nuevas_instrucciones.push(*inst);
     }
     return nuevas_instrucciones;
-    
-
-    //return instruccion;
 }
 
 Instruccion::Instruccion(){

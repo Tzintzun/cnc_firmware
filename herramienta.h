@@ -1,6 +1,8 @@
 #ifndef __HERRAMIENTA__
 #define __HERRAMIENTA__
 
+#include <errores.h>
+#include <pines.h>
 class Herramienta{
 
     private:
@@ -10,8 +12,8 @@ class Herramienta{
 
     public:
     Herramienta();
-    int cambiar_direccion(bool direccion);
-    int cambiar_estado(bool estado);
+    int cambiar_direccion(int pin, bool direccion);
+    int cambiar_estado(int pin, bool estado);
 
 };
 

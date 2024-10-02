@@ -5,27 +5,27 @@ Herramienta::Herramienta(){
     this->estado = false;
 }
 
-int Herramienta::cambiar_direccion(bool direccion){
+int Herramienta::cambiar_direccion(int pin, bool direccion){
     this->router_dir = direccion;
 
     if(this->router_dir == false){
-        //habilitamos pin de direccion;
+        ESTABLECER_SENTIDO_HORARIO_HERRAMIENTA(pin);
     }
 
     if(this->router_dir == true){
-        //deshabilitamos pin de cambio de direccion
+        ESTABLECER_SENTIDO_ANTIHORARIO_HERRAMIENTA(pin);
     }
     return OK;
 }
 
-int Herramienta::cambiar_estado(bool estado){
+int Herramienta::cambiar_estado(int pin, bool estado){
     this->estado = estado;
 
     if(this->estado == false){
-        //deshabilitamos herramienta
+        DESHABILITAR_HERRAMIENTA(pin);
     }
     if(this->estado == true){
-        //habilitamos herramienta
+        HABILITAR_HERRAMIENTA(pin);
     }
 
     return OK;

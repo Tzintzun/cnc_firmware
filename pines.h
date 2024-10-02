@@ -31,5 +31,9 @@
 #define HABILITAR_EJES(x) (digitalWrite((x), LOW))
 #define DESHABILITAR_EJES(x) (digitalWrite((x), HIGH))
 
-#define CAMBIAR_DIRECCION_HERRAMIENTA(x) (digitalWrite(PIN_DIR_HERRAMIENTA, (x)))
-#define HBILITAR_HERRAMIENTA(x) (digitalWrite(PIN_HABILITAR_HERRAMIENTA, (x)))
+
+/*FUNCIONES HERRAMIENTA*/
+#define ESTABLECER_SENTIDO_HORARIO_HERRAMIENTA(x) (digitalWrite((x), HIGH))
+#define ESTABLECER_SENTIDO_ANTIHORARIO_HERRAMIENTA(x) (digitalWrite((x), LOW))
+#define HABILITAR_HERRAMIENTA(x) (digitalWrite((x), HIGH))
+#define DESHABILITAR_HERRAMIENTA(x) (digitalWrite((x), LOW));
