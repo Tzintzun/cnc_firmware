@@ -141,17 +141,18 @@ int main(void){
         // Comparar resultado con prueba.resultado_esperado y error con prueba.error_esperado
     }
 
+    int i = 3;
     for ( PruebaTrayectoria& prueba : pruebas_error) {
         int error = OK;
         calculadora = new CalculadoraTrayectorias(reader);
         
         parametros_actuadores resultado = calculadora->calcular_trayectoria_lineal(prueba.instruccion, prueba.posicion_inicial, prueba.unidades, true, &error);
         if(error == prueba.error_esperado){     
-            std::cout<<"TEST: OK";
+            std::cout<<"TEST "<<i<<": OK";
         }else{
-            std::cout<<"TEST: ERROR";
+            std::cout<<"TEST "<<i<<": ERROR";
         }
-        
+        i++;
         std::cout<<std::endl;
         // Verificar que el error sea el esperado
     }

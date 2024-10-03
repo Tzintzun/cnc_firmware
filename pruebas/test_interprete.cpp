@@ -11,6 +11,9 @@ struct EjemploErrores {
     int codigo_error;
 };
 
+//Compilar:
+//g++ interprete.cpp errores.cpp inih/ini.c inih/cpp/INIReader.cpp pruebas/test_interprete.cpp -o pruebas/test_interprete
+
 int main(void){
 
     /*Comandos de prueba*/

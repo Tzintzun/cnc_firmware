@@ -157,10 +157,8 @@ void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void *cont
 
         configuracion_actuador *actuador = actuadores[timer_id];
         if(actuador->numero_pasos>0){
-            std::cout<<"EJECUTANDO: PIN: "<<actuador->pin<<"\tPASOS R: "<<actuador->numero_pasos<<std::endl;
+            //std::cout<<"EJECUTANDO: PIN: "<<actuador->pin<<"\tPASOS R: "<<actuador->numero_pasos<<std::endl;
             EJECUTAR_PASO(actuador->pin);
-            //digitalWrite(actuador->pin, actuador->estado?HIGH:LOW);
-            //actuador->estado = !(actuador->estado);
             actuador->numero_pasos -= 1;
         }
     }

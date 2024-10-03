@@ -238,6 +238,9 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
     {
         instrucciones_bloque.push_back(instruccion_argumentos);
     }
+    if(instrucciones_bloque.empty()){
+        FAIL_INTERPRETE(ERROR_BLOQUE_SIN_INSTRUCCION);
+    }
     std::queue<Instruccion *> nuevas_instrucciones;
     for(std::list<Instruccion *>::iterator inst = instrucciones_bloque.begin(); 
         inst !=  instrucciones_bloque.end(); ++inst){
