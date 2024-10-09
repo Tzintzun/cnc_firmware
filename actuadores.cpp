@@ -11,7 +11,11 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     this->pin_dir_ejes[2] = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_DIR_EJE_Z", PIN_DIR_EJE_Z);
 
     this->pin_habilitar_ejes = reader_config.GetInteger("PINOUT_ACTUADORES", "PIN_HABILITAR_EJES", PIN_HABILITAR_EJES);
+    this->pin_habilitar_herramienta = reader_config.GetInteger("PINOUT_HERRAMIENTA", "PIN_HABILITAR_HERRAMIENTA",PIN_HABILITAR_HERRAMIENTA);
+    this->pin_dir_herramienta = reader_config.GetInteger("PINOUT_HERRAMIENTA", "PIN_DIR_HERRAMIENTA",PIN_DIR_HERRAMIENTA);
     temporizadores_listos = false;
+    this->router = new Herramienta();
+    this->deshabilitar_herramienta();
 
     wiringPiSetup () ;
     //std::cout<<"Configurando modo pines"<<std::endl;
@@ -166,3 +170,18 @@ void ManipularActuadores::signal_handler(int signum, siginfo_t *info, void *cont
 
 }
 
+void ManipularActuadores::establecer_herramienta_sentido_antihorario(){
+    this->router->cambiar_direccion(pin_dir_herramienta, false);
+}
+
+void ManipularActuadores::establecer_herramienta_sentido_horario(){
+    this->router->cambiar_direccion(pin_dir_herramienta, true);
+}
+
+void ManipularActuadores::habilitar_herramienta(){
+    this->router->cambiar_estado(pin_habilitar_herramienta, true);
+}
+
+void ManipularActuadores::deshabilitar_herramienta(){
+    this->router->cambiar_estado(pin_habilitar_herramienta, false);
+}

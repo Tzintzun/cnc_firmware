@@ -39,6 +39,7 @@ class Instruccion{
         unsigned int getInstruccion();
         Instruccion();
         std::string toString();
+        bool tipo_instruccion;
 };
 
 class Interprete
