@@ -42,7 +42,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             double distancia = 0.0;
             if(sistema_cordenadas){
                 distancia = aux[j] - posicion_actual[j];
-                if(distancia == -0){
+                if(distancia == -0 || distancia == 0){
                     distancia = 0;
                 }
                 if(aux[j] >= area_trabajo[j]){
@@ -83,13 +83,15 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     switch (instruccion.getInstruccion())
     {
     case DESPLAZAMIENTO_LINEAL_LIBRE:
+        std::cout<<"DESPLAZAMIENTO LINEAL LIBRE";
         tiempo = vector/(feedrate_desplazamiento); // (min/mm)*mm = min
                                                         // seg = 60*min;
                                                         // nanoseg = 1000000000*seg
-        std::cout<<tiempo<<std::endl;
+        std::cout<<std::endl<<tiempo<<"\t"<<vector<<"\t"<<feedrate_desplazamiento<<std::endl;
         for(int j=0; j<NUM_EJES; j++){
             if(parametros.num_pasos[j] != 0){
                 parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+                std::cout<<"Periodo del paso Calculadora"<<parametros.periodo_pasos[j];
             }else{
                 parametros.periodo_pasos[j] = 0;
             }
@@ -133,14 +135,14 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     }
     *error = OK;
     for(int i=0; i<NUM_EJES;i++ ){
-        if(aux[i] != 0.0){
-            if(sistema_cordenadas){
-                posicion_actual[i] = aux[i];
-            }else{
-                posicion_actual[i] += aux[i];
-            }
-            
+        
+        if(sistema_cordenadas){
+            posicion_actual[i] = aux[i];
+        }else{
+            posicion_actual[i] += aux[i];
         }
+            
+        
     }
     return parametros;
 }

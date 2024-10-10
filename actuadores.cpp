@@ -57,11 +57,10 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     std::cout<<"Configurando direccion de pines"<<std::endl;
 
     for (int i=0;i<NUM_EJES;i++){
-        std::cout<<"\t"<<parametros.direccion[i]<<std::endl;
         if(parametros.direccion[i]){
-            CAMBIAR_DIRECCION_EJE(pin_eje[i],HIGH);
+            CAMBIAR_DIRECCION_EJE(pin_dir_ejes[i],HIGH);
         }else{
-            CAMBIAR_DIRECCION_EJE(pin_eje[i],LOW);
+            CAMBIAR_DIRECCION_EJE(pin_dir_ejes[i],LOW);
         }
     }
     
@@ -92,8 +91,6 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         its->it_value.tv_nsec = 10000000;
         its->it_interval.tv_sec = (long)floorl(parametros.periodo_pasos[i]/1000000000);
         its->it_interval.tv_nsec = (long)(parametros.periodo_pasos[i]%1000000000);
-
-        std::cout<<"PeriodoPasos: "<< parametros.periodo_pasos[i]<<std::endl;
 
         configuracion_actuador *configuracion = new configuracion_actuador;
         configuracion->numero_pasos = parametros.num_pasos[i];

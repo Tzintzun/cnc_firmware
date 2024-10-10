@@ -61,6 +61,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
                         }
+                        instruccion_argumentos->tipo_instruccion = TIPO_INSTRUCCION_G;
                         bandera_comando |= 1<<GRUPO_MODAL_1;
                         break;
                     case 90: case 91:
@@ -80,7 +81,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
                         }
-                        
+                        aux->tipo_instruccion = TIPO_INSTRUCCION_G;
                         instrucciones_bloque.push_back(aux);
                         bandera_comando |= 1<<GRUPO_MODAL_3;
                         break; 
@@ -101,7 +102,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
                         }
-                        
+                        aux->tipo_instruccion = TIPO_INSTRUCCION_G;
                         instrucciones_bloque.push_back(aux);
                         bandera_comando |= 1<<GRUPO_MODAL_6;
                         break; 
@@ -125,6 +126,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
                         }
+                        instruccion_argumentos->tipo_instruccion = TIPO_INSTRUCCION_G;
                         bandera_comando |= 1<<GRUPO_MODAL_0;
                         break; 
                     
@@ -152,7 +154,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
                         }
-                        
+                        aux->tipo_instruccion = TIPO_INSTRUCCION_M;
                         instrucciones_bloque.push_back(aux);
                         bandera_comando |= 1<<GRUPO_MODAL_4;
                         break; 
@@ -176,7 +178,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
                         }
-                        
+                        aux->tipo_instruccion = TIPO_INSTRUCCION_M;
                         instrucciones_bloque.push_back(aux);
                         bandera_comando |= 1<<GRUPO_MODAL_7;
                         break;
@@ -234,7 +236,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
         }
         
     }
-    if(instruccion_argumentos->getInstruccion() != INSTRUCCION_NULA)
+    if(instruccion_argumentos->getInstruccion() != (unsigned int)INSTRUCCION_NULA)
     {
         instrucciones_bloque.push_back(instruccion_argumentos);
     }
@@ -246,7 +248,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
         inst !=  instrucciones_bloque.end(); ++inst){
         (*inst)->valores.N = valor_N;
         (*inst)->valores.bandera_palabras = bandera_palabra;
-        if((*inst)->getInstruccion() == INSTRUCCION_NULA){
+        if((*inst)->getInstruccion() == (unsigned int)INSTRUCCION_NULA){
             //std::cout<<(*inst)->toString()<<std::endl;
             FAIL_INTERPRETE(ERROR_BLOQUE_SIN_INSTRUCCION);
         }

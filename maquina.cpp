@@ -14,6 +14,8 @@ MaquinaCNC::MaquinaCNC(INIReader reader){
     this->interprete_gcode = new Interprete();
     this->manipulador_actuadores = new ManipularActuadores(reader);
     this->router = new Herramienta();
+    this->sistema_unidades = false;
+    this->modo_desplazamiento = true;
 
 }
 
@@ -43,26 +45,29 @@ int MaquinaCNC::ejecutar_instruccion(std::string instruccion){
                 {
                 case INTERPOLACION_LINEAL: case DESPLAZAMIENTO_LINEAL_LIBRE:
 
-                    parametros_actuadores parametros = this->calculadora->calcular_trayectoria_lineal(*instruccion, this->posicion_xyz, this->sistema_unidades, this->modo_desplazamiento, &error);
+                    {
+                        parametros_actuadores parametros = this->calculadora->calcular_trayectoria_lineal(*instruccion, this->posicion_xyz, this->sistema_unidades, this->modo_desplazamiento, &error);
 
-                    if(error != OK){
-                        return error;
+                        if(error != OK){
+                            return error;
+                        }
+
+                        error = this->manipulador_actuadores->ejecutar_movimiento(parametros);
+                        if(error != OK) return error;
                     }
 
-                    error = this->manipulador_actuadores->ejecutar_movimiento(parametros);
-                    if(error != OK) return error;
                     break;
                 case CONF_UNIDADES_MILIMETROS:
-                    this->sistema_unidades = false;
+                    {this->sistema_unidades = false;}
                     break;
                 case CONF_UNIDADES_PULGADAS:
-                    this->sistema_unidades = true;
+                    {this->sistema_unidades = true;}
                     break;
                 case MODO_DISTANCIA_ABSOLUTO: 
-                    this->modo_desplazamiento = true;
+                    {this->modo_desplazamiento = true;}
                     break;
                 case MODO_DISTANCIA_INCREMENTAL:
-                    this->modo_desplazamiento = false;
+                    {this->modo_desplazamiento = false;}
                     break;
                 default:
                     return INSTRUCCION_NO_SOPORTADA; //retornamos un error
