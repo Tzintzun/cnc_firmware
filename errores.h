@@ -25,6 +25,10 @@
 #define ERROR_TIMER_NO_CONFIGURADO 12
 #define ERROR_TIMER_NO_DESTRUIDO 13
 
+//ERRORES EJECUACION INSTRUCCIONES
+#define ERROR_ARCHIVO_NO_HABIERTO 14
+#define ERROR_INSTRUCCION_NULA 15
+
 std::string obtener_error(int error, std::string linea);
 
 #endif

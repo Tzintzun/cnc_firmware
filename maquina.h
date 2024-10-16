@@ -3,6 +3,10 @@
 
 #include <iostream>
 #include <queue>
+#include <fstream>
+#include <chrono>
+#include <thread>
+#include <mutex>
 
 #include "herramienta.h"
 #include "interprete.h"
@@ -11,6 +15,9 @@
 #include "inih/cpp/INIReader.h"
 #include "errores.h"
 #include "actuadores.h"
+
+#define BUFFER_INSTRUCCIONES_MAX 10
+#define BUFFER_INSTRUCCIONES_MIN 5
 typedef struct{
 
 } instruccion_t;
@@ -28,7 +35,16 @@ class MaquinaCNC{
     CalculadoraTrayectorias *calculadora;
     ManipularActuadores *manipulador_actuadores;
     //ManipuladorActuadores actuadores;
+
     std::queue<Instruccion *> cola_instrucciones;
+    bool en_ejecucion;
+    int hilo_error;
+    std::thread *hilo_ejecicion_cola_instrucciones;
+    std::mutex bloqueo_cola_instrucciones;
+    std::mutex bloqueo_bandera_ejecucion;
+
+    void ejecutar_cola_instrucciones();
+    int ejecutar_instruccion(Instruccion *instruccion);
 
     public:
      double posicion_xyz[NUM_EJES];
