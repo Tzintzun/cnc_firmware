@@ -18,5 +18,5 @@ build/:
 	mkdir -p build/inih/cpp
 .PHONY: clean
 clean:
-	rm -rf build main.exe
+	rm -rf build main
 

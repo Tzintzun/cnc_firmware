@@ -137,9 +137,19 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     for(int i=0; i<NUM_EJES;i++ ){
         
         if(sistema_cordenadas){
-            posicion_actual[i] = aux[i];
+            if(!unidades){
+                posicion_actual[i] = aux[i];
+            }else{
+                posicion_actual[i] = aux[i] * MM_TO_INCH;
+            }
+            
         }else{
-            posicion_actual[i] += aux[i];
+            if(!unidades){
+                posicion_actual[i] += aux[i];
+            }else{
+                posicion_actual[i] += (aux[i] * MM_TO_INCH);
+            }
+           
         }
             
         
