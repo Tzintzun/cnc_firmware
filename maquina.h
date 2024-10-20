@@ -6,7 +6,7 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
-#include <mutex>
+#include <future>
 
 #include "herramienta.h"
 #include "interprete.h"
@@ -23,8 +23,8 @@ typedef struct{
 } instruccion_t;
 
 class MaquinaCNC{
-    //posicion actual de la maquina.
-   
+    
+    private:
     double dimenciones_xyz[NUM_EJES];
     bool sistema_unidades; // G20/G21 mm/pulgadas false/true
     bool modo_desplazamiento; //G90/G91 deplazamiento absoluto(True) o incremental(False)
@@ -34,20 +34,17 @@ class MaquinaCNC{
     Interprete *interprete_gcode;
     CalculadoraTrayectorias *calculadora;
     ManipularActuadores *manipulador_actuadores;
-    //ManipuladorActuadores actuadores;
 
-    std::queue<Instruccion *> cola_instrucciones;
-    bool en_ejecucion;
-    int hilo_error;
-    std::thread *hilo_ejecicion_cola_instrucciones;
-    std::mutex bloqueo_cola_instrucciones;
-    std::mutex bloqueo_bandera_ejecucion;
-
-    void ejecutar_cola_instrucciones();
+    
+   
+    std::queue<Instruccion *> * cola_ejecucion;
+    
+    
+    
     int ejecutar_instruccion(Instruccion *instruccion);
 
     public:
-     double posicion_xyz[NUM_EJES];
+    double posicion_xyz[NUM_EJES];
     int ejecutar_instruccion(std::string instruccion);
     int ejecutar_archivo(std::string ruta);
     MaquinaCNC(INIReader reader);

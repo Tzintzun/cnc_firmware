@@ -16,7 +16,7 @@ MaquinaCNC::MaquinaCNC(INIReader reader){
     this->router = new Herramienta();
     this->sistema_unidades = false;
     this->modo_desplazamiento = true;
-    this->en_ejecucion = false;
+   
 
 }
 
@@ -116,7 +116,7 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
 
 
     int error;
-    std::queue<Instruccion *> cola_auxiliar;
+
     /*Leer archivo*/
     std::ifstream archivo_programa;
     archivo_programa.open(ruta, std::ios::in);
@@ -126,13 +126,22 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
     }
 
     error = OK;
+    std::queue<Instruccion *> * cola_espera = new std::queue<Instruccion *>();
+    
     std::chrono::time_point<std::chrono::high_resolution_clock> t_inicio = std::chrono::high_resolution_clock::now();
+    std::future<int> *resultado_futuro = NULL;
+    std::queue<std::string> lineas_archivo;
     while(!archivo_programa.eof()){
-        std::getline(archivo_programa,linea);
 
+        std::getline(archivo_programa, linea);
+        lineas_archivo.push(linea);
+    }
+    archivo_programa.close();
+    while(!lineas_archivo.empty()){
+        linea = lineas_archivo.front();
         /*leemos las n primeras lineas. Las interpretamos y las almacenamos*/
         if(linea.empty()) continue;
-        cola_auxiliar = this->interprete_gcode->interpretar_bloque_gcode(linea,&error);
+        std::queue<Instruccion *> cola_auxiliar = this->interprete_gcode->interpretar_bloque_gcode(linea,&error);
 
         if(error != OK) {
             obtener_error(error, linea);
@@ -141,86 +150,56 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
         std::cout<<"Instruccion interpretada: \t"<<linea<<std::endl;
         if(cola_auxiliar.size() == 0) continue;
 
-        /*concatenamos la lista de colas con la cola principal, bloqueamos el hilo de ejecucion de instucciones*/
-        bloqueo_cola_instrucciones.lock();
+        /*Guardamos las instrucciones en la cola de espera*/
+
         while(!cola_auxiliar.empty()){
-            this->cola_instrucciones.push(cola_auxiliar.front());
+            cola_espera->push(cola_auxiliar.front());
             cola_auxiliar.pop();
         }
-        int instrucciones_en_cola = this->cola_instrucciones.size();
-        bloqueo_cola_instrucciones.unlock();
 
-        if( instrucciones_en_cola>= BUFFER_INSTRUCCIONES_MAX){
-            /*Verificamos el estado del hilo de ejecucion de instrucciones*/
-            bloqueo_bandera_ejecucion.lock();
-                if(!en_ejecucion){
-                    this->hilo_ejecicion_cola_instrucciones = new std::thread(ejecutar_cola_instrucciones, this);
-                }
-            bloqueo_bandera_ejecucion.unlock();
-
-            while (true)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-                /*Bloquemos el recurso*/
-                std::unique_lock<std::mutex> lock(bloqueo_cola_instrucciones);
-                if(this->cola_instrucciones.size() <= BUFFER_INSTRUCCIONES_MIN){
-                    break;
-                }
-                std::unique_lock<std::mutex> unlock(bloqueo_cola_instrucciones);
+        if((cola_espera->size() >= BUFFER_INSTRUCCIONES_MAX) || (lineas_archivo.size() == 1)){
+            this->cola_ejecucion = new std::queue<Instruccion *>(*cola_espera);
+            if(resultado_futuro != NULL){
+                int resultado_cola_ejecutada = resultado_futuro->get();
+                if(resultado_cola_ejecutada != OK) return resultado_cola_ejecutada;
             }
+            std::packaged_task<int()> ejecutar_cola([this](){
+                
+                while(true){
+                    if(this->cola_ejecucion->empty()){
+                        return OK;
+                    }
+                    Instruccion *instruccion = this->cola_ejecucion->front();
+
+                    int resultado = this->ejecutar_instruccion(instruccion);
+                    if(resultado != OK) return resultado;
+                    
+                    this->cola_ejecucion->pop();
+                    
+                }
+
+            });
+
+            resultado_futuro = new std::future<int>();
+            *resultado_futuro = ejecutar_cola.get_future();
+
+            std::thread hilo(std::move(ejecutar_cola));
+            cola_espera = new std::queue<Instruccion *>();
         }
+
+        lineas_archivo.pop();
     }
-    if(this->hilo_ejecicion_cola_instrucciones != NULL){
-        if(this->hilo_ejecicion_cola_instrucciones->joinable()){
-            this->hilo_ejecicion_cola_instrucciones->join();
-        }
-    }
+    
     std::chrono::time_point<std::chrono::high_resolution_clock> t_final = std::chrono::high_resolution_clock::now();
 
-    std::chrono::duration<double> duracion_ejecucion = t_final - t_final;
+    std::chrono::duration<double> duracion_ejecucion = t_final - t_inicio;
 
     std::cout<<"Ejecucion de archivo: "<<ruta<< ". TERMINADA\tTiempo: "<<duracion_ejecucion.count()<<std::endl;
     return OK;
 
 }
 
-void MaquinaCNC::ejecutar_cola_instrucciones(){
 
-    Instruccion *instruccion;
-    bloqueo_bandera_ejecucion.lock();
-    en_ejecucion = true;
-    bloqueo_bandera_ejecucion.unlock();
-    while(true){
-        bloqueo_cola_instrucciones.lock();
-        if(cola_instrucciones.empty()) {
-            bloqueo_cola_instrucciones.unlock();
-            break;
-        };
-        instruccion = cola_instrucciones.front();
-        bloqueo_cola_instrucciones.unlock();
-
-        int resultado = ejecutar_instruccion(instruccion);
-        if(resultado != OK){
-            
-            bloqueo_bandera_ejecucion.lock();
-            hilo_error = resultado;
-            en_ejecucion = false;
-            bloqueo_bandera_ejecucion.unlock();
-            return;
-        }
-        bloqueo_cola_instrucciones.lock();
-        cola_instrucciones.pop();
-        bloqueo_cola_instrucciones.unlock();
-    }
-
-    bloqueo_bandera_ejecucion.lock();
-    hilo_error = OK;
-    en_ejecucion = false;
-    bloqueo_bandera_ejecucion.unlock();
-    return;
-    
-}
 std::string MaquinaCNC::toString(){
     std::string maquina = "\nNUMERO EJES: " + std::to_string(NUM_EJES);
     maquina += "\nDIMENSIONES: ";
