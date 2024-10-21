@@ -3,13 +3,13 @@
 CalculadoraTrayectorias::CalculadoraTrayectorias(INIReader reader_conf){
     
     
-    this->area_trabajo[0] = reader_conf.GetReal("MaquinaCNC", "MAX_X_DIM", MAX_X_DIS);
-    this->area_trabajo[1] = reader_conf.GetReal("MaquinaCNC", "MAX_Y_DIM", MAX_Y_DIS);
-    this->area_trabajo[2] = reader_conf.GetReal("MaquinaCNC", "MAX_Z_DIM", MAX_Z_DIS);
+    this->area_trabajo[0] = reader_conf.GetInteger64("MaquinaCNC", "MAX_X_DIM", MAX_X_DIS);
+    this->area_trabajo[1] = reader_conf.GetInteger64("MaquinaCNC", "MAX_Y_DIM", MAX_Y_DIS);
+    this->area_trabajo[2] = reader_conf.GetInteger64("MaquinaCNC", "MAX_Z_DIM", MAX_Z_DIS);
 
-    this->pasos_mm[0] = reader_conf.GetReal("Trayectorias", "PASOS_MM_X", PASOS_X_MM);
-    this->pasos_mm[1] = reader_conf.GetReal("Trayectorias", "PASOS_MM_Y", PASOS_Y_MM);
-    this->pasos_mm[2] = reader_conf.GetReal("Trayectorias", "PASOS_MM_Z", PASOS_Z_MM);
+    this->pasos_mm[0] = reader_conf.GetInteger64("Trayectorias", "PASOS_MM_X", PASOS_X_MM);
+    this->pasos_mm[1] = reader_conf.GetInteger64("Trayectorias", "PASOS_MM_Y", PASOS_Y_MM);
+    this->pasos_mm[2] = reader_conf.GetInteger64("Trayectorias", "PASOS_MM_Z", PASOS_Z_MM);
 
     this->feedrate_desplazamiento = reader_conf.GetReal("Trayectorias", "FEEDRATE", FEEDRATE);
 
@@ -24,12 +24,12 @@ std::string CalculadoraTrayectorias::toString(){
     return calculadora;
 }
 
-parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instruccion instruccion, double *posicion_actual, bool unidades, bool sistema_cordenadas, int *error){
+parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instruccion instruccion, long *posicion_actual, bool unidades, bool sistema_cordenadas, int *error){
     parametros_actuadores parametros;
     gcode_valores valores = instruccion.valores;
-    double *aux = (double *)&valores;
-    double vector = 0.0;
-    double componentes[NUM_EJES];
+    long *aux = (long *)&valores;
+    long vector = 0;
+    long componentes[NUM_EJES];
     memset(componentes,0, sizeof(double)*3);
 
     /*Calculamos los pasos * milimetro*/
@@ -39,7 +39,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         
         if((valores.bandera_palabras & i) != 0){
             
-            double distancia = 0.0;
+            long distancia = 0;
             if(sistema_cordenadas){
                 distancia = aux[j] - posicion_actual[j];
                 if(distancia == -0 || distancia == 0){
@@ -60,9 +60,9 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             componentes[j] = distancia;
             vector += (distancia*distancia);
             if(!unidades){
-                parametros.num_pasos[j] = std::fabs(distancia)*(this->pasos_mm[j]);
+                parametros.num_pasos[j] = (std::fabs(distancia)*(this->pasos_mm[j]))/100;
             }else{
-                parametros.num_pasos[j] = std::fabs(distancia)*MM_TO_INCH*(this->pasos_mm[j]);
+                parametros.num_pasos[j] = (std::fabs(distancia)*MM_TO_INCH*(this->pasos_mm[j]))/1000;
                 std::cout<<std::fabs(distancia)*(this->pasos_mm[j])<<std::endl;
             }
             if( distancia > 0){
@@ -90,7 +90,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         std::cout<<std::endl<<tiempo<<"\t"<<vector<<"\t"<<feedrate_desplazamiento<<std::endl;
         for(int j=0; j<NUM_EJES; j++){
             if(parametros.num_pasos[j] != 0){
-                parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+                parametros.periodo_pasos[j] = (tiempo*60*10000000)/parametros.num_pasos[j];
                 std::cout<<"Periodo del paso Calculadora"<<parametros.periodo_pasos[j];
             }else{
                 parametros.periodo_pasos[j] = 0;
@@ -110,7 +110,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             
             for(int j=0; j<NUM_EJES; j++){
                 if(parametros.num_pasos[j] != 0){
-                    parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+                    parametros.periodo_pasos[j] = (tiempo*60*10000000)/parametros.num_pasos[j];
                 }else{
                     parametros.periodo_pasos[j] = 0;
                 }
@@ -138,16 +138,16 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         
         if(sistema_cordenadas){
             if(!unidades){
-                posicion_actual[i] = aux[i];
+                posicion_actual[i] = aux[i] ;
             }else{
-                posicion_actual[i] = aux[i] * MM_TO_INCH;
+                posicion_actual[i] = (aux[i] * MM_TO_INCH)/10;
             }
             
         }else{
             if(!unidades){
                 posicion_actual[i] += aux[i];
             }else{
-                posicion_actual[i] += (aux[i] * MM_TO_INCH);
+                posicion_actual[i] += (aux[i] * MM_TO_INCH)/10;
             }
            
         }

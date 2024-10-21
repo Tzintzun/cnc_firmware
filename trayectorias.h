@@ -22,10 +22,10 @@ typedef struct
 class CalculadoraTrayectorias{
     private:
     long pasos_mm[NUM_EJES]; //pasos por milimetro
-    double area_trabajo [NUM_EJES];
+    long area_trabajo [NUM_EJES];
     double feedrate_desplazamiento;
     public:
-    parametros_actuadores calcular_trayectoria_lineal(Instruccion instruccion, double *posicion, bool unidades, bool sistema_cordenadas, int* error);
+    parametros_actuadores calcular_trayectoria_lineal(Instruccion instruccion, long *posicion, bool unidades, bool sistema_cordenadas, int* error);
     CalculadoraTrayectorias(INIReader reader_conf);
     std::string toString();
     

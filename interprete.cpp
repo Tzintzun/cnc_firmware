@@ -8,7 +8,7 @@ bool leer_flotante(std::string linea, int* indice, double* valor);
 std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea, int* error){
 
     int indice_caracter = 0;
-    double valor = 0;
+    long valor = 0;
     int bandera_palabra = 0;
     int bandera_comando = 0;
     int valor_N=0;
@@ -32,7 +32,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
             FAIL_INTERPRETE(ERROR_FORMATO_NUMERO_INCORRECTO);
         }
 
-        int valor_entero = std::round(valor);
+        int valor_entero = valor/100;
         
 
         switch (letra){
@@ -284,13 +284,11 @@ std::string Instruccion::toString(){
     return mensaje.str();
 }
 
-bool leer_flotante(std::string linea, int* indice, double* valor){
+bool leer_flotante(std::string linea, int* indice, long* valor){
 
     
     int indice_aux = *indice;
     int numero_digitos = 0;
-    //bool negativo = false;
-    //bool decimal = false;
     
     if(isdigit(linea[indice_aux])==0 && linea[indice_aux] != '-' && linea[indice_aux] != '+'){
         return false;
@@ -321,7 +319,7 @@ bool leer_flotante(std::string linea, int* indice, double* valor){
     //std::cout<<"Numero Digitos: "<<numero_digitos<<std::endl;
     //std::cout<<"Indice: "<<*indice<<std::endl;
     //std::cout<<"Numero: "<<linea.substr(*indice, numero_digitos)<<"\n\n"<<std::endl;
-    *valor = std::strtod (linea.substr(*indice, numero_digitos).c_str(), NULL);
+    *valor = (std::strtod (linea.substr(*indice, numero_digitos).c_str(), NULL) * 100);
     *indice = indice_aux;
     return true;
 }

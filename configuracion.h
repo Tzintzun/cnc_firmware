@@ -11,6 +11,6 @@
 #define MAX_Z_DIS 45 //maxima distancia que se puede recorrer en Z
 
 
-#define MM_TO_INCH 25.4
+#define MM_TO_INCH 254
 
 #define FEEDRATE 1000.0 // mm/min
