@@ -47,7 +47,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         if(tipo_instruccion == INSTRUCCION_CON_ARGUMENTOS_XYZ){
                             FAIL_INTERPRETE(ERROR_MULTIPLES_INSTRUC_CON_ARGUMENTOS);
                         }
-                        tipo_instruccion = INSTRUCCION_CON_ARGUMENTOS_XYZ;
+                        
                         instruccion_argumentos = new Instruccion();
                         switch (valor_entero)
                         {
@@ -64,9 +64,12 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         instruccion_argumentos->tipo_instruccion = TIPO_INSTRUCCION_G;
                         bandera_comando |= 1<<GRUPO_MODAL_1;
                         break;
-                    case 90: case 91:
+                    case 90: case 91: case 92:
                         if((bandera_comando &= 1<<GRUPO_MODAL_3) != 0 ){
                             FAIL_INTERPRETE(ERROR_GRUPO_MODAL_CONFLICTO);
+                        }
+                        if(valor_entero == 92 && tipo_instruccion== INSTRUCCION_CON_ARGUMENTOS_XYZ){
+                            FAIL_INTERPRETE(ERROR_MULTIPLES_INSTRUC_CON_ARGUMENTOS);
                         }
                         aux = new Instruccion();
                         switch (valor_entero)
@@ -77,6 +80,9 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                             case 91:
                                 aux->setInstruccion(MODO_DISTANCIA_INCREMENTAL);
                                 break;
+                            case 92:
+                                tipo_instruccion = INSTRUCCION_CON_ARGUMENTOS_XYZ;
+                                aux->setInstruccion(TRASLADO_ORIGEN);
                             default:
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;
@@ -199,7 +205,7 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                     FAIL_INTERPRETE(ERROR_ARGUMENTO_REPETIDO);
                 }
                 if(instruccion_argumentos != NULL){
-                    instruccion_argumentos->valores.f = valor;
+                    instruccion_argumentos->valores.f = valor/100;
                     bandera_palabra |= F_PALABRA;
                 }
                 break;
