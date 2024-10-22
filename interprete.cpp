@@ -3,7 +3,7 @@
 
 #define SIN_INSTRUCCION 0
 #define INSTRUCCION_CON_ARGUMENTOS_XYZ 1
-bool leer_flotante(std::string linea, int* indice, double* valor);
+bool leer_flotante(std::string linea, int* indice, long* valor);
 
 std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea, int* error){
 
@@ -281,9 +281,9 @@ std::string Instruccion::toString(){
 
     mensaje<<"Instruccion: "<<this->getInstruccion()<<"\tBanderas: ";
     mensaje<<std::hex<<this->valores.bandera_palabras<<std::dec;
-    mensaje<<"\n\tX: "<<this->valores.x;
-    mensaje<<"\n\tY: "<<this->valores.y;
-    mensaje<<"\n\tZ: "<<this->valores.z;
+    mensaje<<"\n\tX: "<<(this->valores.x /100.0);
+    mensaje<<"\n\tY: "<<(this->valores.y /100.0);
+    mensaje<<"\n\tZ: "<<(this->valores.z /100.0);
     mensaje<<"\n\tF: "<<this->valores.f;
     mensaje<<"\n\tN: "<<this->valores.N;
 

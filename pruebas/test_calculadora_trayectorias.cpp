@@ -28,12 +28,12 @@ int main(void){
 
     CalculadoraTrayectorias *calculadora = new CalculadoraTrayectorias(reader);
 
-    double posicion[NUM_EJES] = {0,0,0};
+    long posicion[NUM_EJES] = {0,0,0};
     Instruccion instruccion1;
     instruccion1.setInstruccion(INTERPOLACION_LINEAL); // G1
-    instruccion1.valores.x = 100.0;
-    instruccion1.valores.y = 50.0;
-    instruccion1.valores.z = 10.0;
+    instruccion1.valores.x = 10000;
+    instruccion1.valores.y = 5000;
+    instruccion1.valores.z = 1000;
     instruccion1.valores.bandera_palabras = X_PALABRA | Y_PALABRA | Z_PALABRA;
 
     PruebaTrayectoria prueba1 = {
@@ -53,8 +53,8 @@ int main(void){
 
     Instruccion instruccion2;
     instruccion2.setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE); // G0
-    instruccion2.valores.x = 4.0; // pulgadas
-    instruccion2.valores.y = 2.0;
+    instruccion2.valores.x = 400; // pulgadas
+    instruccion2.valores.y = 200;
     instruccion2.valores.bandera_palabras = X_PALABRA | Y_PALABRA;
 
     PruebaTrayectoria prueba2 = {
@@ -74,7 +74,7 @@ int main(void){
 
     Instruccion instruccion3;
     instruccion3.setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE); // G0
-    instruccion3.valores.x = -1; // pulgadas
+    instruccion3.valores.x = -100; // pulgadas
     instruccion3.valores.y = 0;
     instruccion3.valores.bandera_palabras = X_PALABRA | Y_PALABRA;
 
@@ -95,8 +95,8 @@ int main(void){
 
     Instruccion instruccion4;
     instruccion4.setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE); // G0
-    instruccion4.valores.x = 100; // pulgadas
-    instruccion4.valores.y = 27.3;
+    instruccion4.valores.x = 10000; 
+    instruccion4.valores.y = 2730;
     instruccion4.valores.bandera_palabras = X_PALABRA | Y_PALABRA;
 
     PruebaTrayectoria prueba4 = {
@@ -116,8 +116,8 @@ int main(void){
 
     Instruccion instruccion5;
     instruccion5.setInstruccion(DESPLAZAMIENTO_LINEAL_LIBRE); // G0
-    instruccion5.valores.x = 100; 
-    instruccion5.valores.y = 27.3;
+    instruccion5.valores.x = 10000; 
+    instruccion5.valores.y = 2730;
     instruccion5.valores.bandera_palabras = X_PALABRA | Y_PALABRA;
 
     PruebaTrayectoria prueba5 = {
@@ -218,6 +218,8 @@ int main(void){
             }
             std::cout<<std::endl;
             std::cout<<std::endl;
+        }else{
+            std::cout<<obtener_error(error, " TEST")<<std::endl;
         }
         // Comparar resultado con prueba.resultado_esperado y error con prueba.error_esperado
     }

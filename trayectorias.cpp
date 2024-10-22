@@ -3,9 +3,9 @@
 CalculadoraTrayectorias::CalculadoraTrayectorias(INIReader reader_conf){
     
     
-    this->area_trabajo[0] = reader_conf.GetInteger64("MaquinaCNC", "MAX_X_DIM", MAX_X_DIS);
-    this->area_trabajo[1] = reader_conf.GetInteger64("MaquinaCNC", "MAX_Y_DIM", MAX_Y_DIS);
-    this->area_trabajo[2] = reader_conf.GetInteger64("MaquinaCNC", "MAX_Z_DIM", MAX_Z_DIS);
+    this->area_trabajo[0] = reader_conf.GetInteger64("MaquinaCNC", "MAX_X_DIM", MAX_X_DIS) * 100;
+    this->area_trabajo[1] = reader_conf.GetInteger64("MaquinaCNC", "MAX_Y_DIM", MAX_Y_DIS) * 100;
+    this->area_trabajo[2] = reader_conf.GetInteger64("MaquinaCNC", "MAX_Z_DIM", MAX_Z_DIS) * 100;
 
     this->pasos_mm[0] = reader_conf.GetInteger64("Trayectorias", "PASOS_MM_X", PASOS_X_MM);
     this->pasos_mm[1] = reader_conf.GetInteger64("Trayectorias", "PASOS_MM_Y", PASOS_Y_MM);
@@ -41,7 +41,15 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             
             long distancia = 0;
             if(sistema_cordenadas){
-                distancia = aux[j] - posicion_actual[j];
+                if(!unidades){
+                    distancia = aux[j] - posicion_actual[j];
+                }else{
+                    std::cout<<"DISTANCIA AUX: "<<aux[j] * MM_TO_INCH<<std::endl;
+                    std::cout<<"DISTANCIA POS ACTUAL: "<<posicion_actual[j]<<std::endl;
+                    distancia = ((aux[j] * MM_TO_INCH)/10) - posicion_actual[j];
+                    
+                }
+                
                 if(distancia == -0 || distancia == 0){
                     distancia = 0;
                 }
@@ -49,22 +57,28 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                     FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
                 }
             }else{
-                distancia = aux[j];
+                if(!unidades){
+                    distancia = aux[j];
+                }else{
+                    distancia = (aux[j] * MM_TO_INCH)/10;
+                }
+                
                 if(aux[j]+posicion_actual[j] >= area_trabajo[j]){
                     FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
                 }
             }
             
-            //std::cout<<distancia<<std::endl;
+            std::cout<<"DISTANCIA CALCULADA"<<distancia<<std::endl;
             
             componentes[j] = distancia;
             vector += (distancia*distancia);
-            if(!unidades){
-                parametros.num_pasos[j] = (std::fabs(distancia)*(this->pasos_mm[j]))/100;
+             parametros.num_pasos[j] = (std::abs(distancia)*(this->pasos_mm[j]))/100;
+            /*if(!unidades){
+               
             }else{
                 parametros.num_pasos[j] = (std::fabs(distancia)*MM_TO_INCH*(this->pasos_mm[j]))/1000;
-                std::cout<<std::fabs(distancia)*(this->pasos_mm[j])<<std::endl;
-            }
+                //std::cout<<std::fabs(distancia)*(this->pasos_mm[j])<<std::endl;
+            }*/
             if( distancia > 0){
                 parametros.direccion[j] = true;
             }else if(distancia < 0){
@@ -87,7 +101,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         tiempo = vector/(feedrate_desplazamiento); // (min/mm)*mm = min
                                                         // seg = 60*min;
                                                         // nanoseg = 1000000000*seg
-        std::cout<<std::endl<<tiempo<<"\t"<<vector<<"\t"<<feedrate_desplazamiento<<std::endl;
+        //std::cout<<std::endl<<tiempo<<"\t"<<vector<<"\t"<<feedrate_desplazamiento<<std::endl;
         for(int j=0; j<NUM_EJES; j++){
             if(parametros.num_pasos[j] != 0){
                 parametros.periodo_pasos[j] = (tiempo*60*10000000)/parametros.num_pasos[j];
@@ -104,7 +118,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             if(!unidades){
                 tiempo = vector/(instruccion.valores.f);
             }else{
-                tiempo = vector/(instruccion.valores.f*MM_TO_INCH);
+                tiempo = vector/((instruccion.valores.f*MM_TO_INCH)/10);
             }
             
             
@@ -118,7 +132,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             }
         }else{
             double tiempo = vector/(feedrate_desplazamiento);
-            std::cout<<tiempo<<std::endl;
+            //std::cout<<tiempo<<std::endl;
             for(int j=0; j<NUM_EJES; j++){
                 if(parametros.num_pasos[j] != 0){
                     parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
