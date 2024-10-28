@@ -1,4 +1,4 @@
-/*Compilacion: inih/ini.c inih/cpp/INIReader.cpp trayectorias.cpp interprete.cpp errores.cpp pruebas/test_calculadora_trayectorias.cpp -o pruebas/testest_calculadora_trayectorias*/
+/*Compilacion: g++ inih/ini.c inih/cpp/INIReader.cpp trayectorias.cpp interprete.cpp errores.cpp pruebas/test_calculadora_trayectorias.cpp -o pruebas/testest_calculadora_trayectorias*/
 
 #include "../trayectorias.h"
 #include "../interprete.h"
@@ -42,8 +42,8 @@ int main(void){
         false, // Unidades en mm
         true, // movimiento absoluto
         { // Resultado esperado
-            {22000, 11000, 2200}, // num_pasos
-            {153067, 306135, 1530678}, // periodo_pasos (esto depende del feedrate y la distancia)
+            {500, 250, 50}, // num_pasos
+            {26937600, 53875200, 269376000}, // periodo_pasos (esto depende del feedrate y la distancia)
             {true, true, true} // dirección
         },
         OK // No se espera error
@@ -63,9 +63,9 @@ int main(void){
         true, // Unidades en pulgadas
         true, // movimiento absoluto
         { // Resultado esperado
-            {257047, 268223, 0}, // num_pasos (conversión a mm)
-            {7759, 7435, 0}, // periodo_pasos
-            {false, false, true} // dirección
+            {8, 4, 0}, // num_pasos (conversión a mm)
+            {750450000, 1500900000, 120072000}, // periodo_pasos
+            {true, true, true} // dirección
         },
         OK
     };
@@ -84,8 +84,8 @@ int main(void){
         true, // Unidades en pulgadas
         true, // movimiento absoluto
         { // Resultado esperado
-            {257047, 268223, 0}, // num_pasos (conversión a mm)
-            {7759, 7435, 0}, // periodo_pasos
+            {635, 254, 0}, // num_pasos (conversión a mm)
+            {25848188, 64620472, 0}, // periodo_pasos
             {false, false, true} // dirección
         },
         OK
@@ -105,9 +105,9 @@ int main(void){
         false, // Unidades en mm
         true, // movimiento absoluto
         { // Resultado esperado
-            {257047, 268223, 0}, // num_pasos (conversión a mm)
-            {7759, 7435, 0}, // periodo_pasos
-            {false, false, true} // dirección
+            {627, 136, 0}, // num_pasos (conversión a mm)
+            {24560765, 113232352, 0}, // periodo_pasos
+            {true, true, true} // dirección
         },
         OK
     };
@@ -126,9 +126,9 @@ int main(void){
         false, // Unidades en mm
         false, // movimiento relativo
         { // Resultado esperado
-            {257047, 268223, 0}, // num_pasos (conversión a mm)
-            {7759, 7435, 0}, // periodo_pasos
-            {false, false, true} // dirección
+            {500, 136, 0}, // num_pasos (conversión a mm)
+            {24948000, 91720588, 0}, // periodo_pasos
+            {true, false, true} // dirección
         },
         OK
     };
