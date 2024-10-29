@@ -44,7 +44,7 @@ class MaquinaCNC{
     int ejecutar_instruccion(Instruccion *instruccion);
 
     public:
-    double posicion_xyz[NUM_EJES];
+    long posicion_xyz[NUM_EJES];
     int ejecutar_instruccion(std::string instruccion);
     int ejecutar_archivo(std::string ruta);
     MaquinaCNC(INIReader reader);

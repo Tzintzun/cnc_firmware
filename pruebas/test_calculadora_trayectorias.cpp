@@ -8,7 +8,7 @@
 
 typedef struct {
     Instruccion instruccion;
-    //double posicion_inicial[NUM_EJES];
+    long posicion_inicial[NUM_EJES];
     bool unidades; // false para mm, true para pulgadas
     bool sistema_movimiento;
     parametros_actuadores resultado_esperado;
@@ -38,7 +38,7 @@ int main(void){
 
     PruebaTrayectoria prueba1 = {
         instruccion1,
-        //{0.0, 0.0, 0.0}, // Posición inicial
+        {0, 0, 0}, // Posición inicial
         false, // Unidades en mm
         true, // movimiento absoluto
         { // Resultado esperado
@@ -59,12 +59,12 @@ int main(void){
 
     PruebaTrayectoria prueba2 = {
         instruccion2,
-        //{50.0, 50.0, 0.0}, // Posición inicial
+        {0, 0, 0}, // Posición inicial
         true, // Unidades en pulgadas
         true, // movimiento absoluto
         { // Resultado esperado
             {8, 4, 0}, // num_pasos (conversión a mm)
-            {750450000, 1500900000, 120072000}, // periodo_pasos
+            {26700000, 53400000, 0}, // periodo_pasos
             {true, true, true} // dirección
         },
         OK
@@ -80,7 +80,7 @@ int main(void){
 
     PruebaTrayectoria prueba3 = {
         instruccion3,
-        //{50.0, 50.0, 0.0}, // Posición inicial
+        {0, 0, 0}, // Posición inicial
         true, // Unidades en pulgadas
         true, // movimiento absoluto
         { // Resultado esperado
@@ -101,7 +101,7 @@ int main(void){
 
     PruebaTrayectoria prueba4 = {
         instruccion4,
-        //{50.0, 50.0, 0.0}, // Posición inicial
+        {0, 0, 0}, // Posición inicial
         false, // Unidades en mm
         true, // movimiento absoluto
         { // Resultado esperado
@@ -122,12 +122,12 @@ int main(void){
 
     PruebaTrayectoria prueba5 = {
         instruccion5,
-        //{50.0, 50.0, 0.0}, // Posición inicial
+        {0, 0, 0}, // Posición inicial
         false, // Unidades en mm
         false, // movimiento relativo
         { // Resultado esperado
             {500, 136, 0}, // num_pasos (conversión a mm)
-            {24948000, 91720588, 0}, // periodo_pasos
+            {24876000, 91455882, 0}, // periodo_pasos
             {true, false, true} // dirección
         },
         OK
@@ -142,7 +142,7 @@ int main(void){
 
     PruebaTrayectoria prueba6 = {
         instruccion6,
-        //{0.0, 0.0, 0.0}, // Posición inicial
+        {0, 0, 0}, // Posición inicial
         false, // Unidades en mm (no importa en este caso)
         true, // movimiento absoluto
         {}, // No importa el valor de retorno
@@ -153,13 +153,13 @@ int main(void){
 
     Instruccion instruccion7;
     instruccion7.setInstruccion(INTERPOLACION_LINEAL); // G1
-    instruccion7.valores.x = 400.0; // Fuera del límite de área (300 mm)
-    instruccion7.valores.y = 50.0;
+    instruccion7.valores.x = 40000; // Fuera del límite de área (300 mm)
+    instruccion7.valores.y = 5000;
     instruccion7.valores.bandera_palabras = X_PALABRA | Y_PALABRA;
 
     PruebaTrayectoria prueba7 = {
         instruccion7,
-        //{0.0, 0.0, 0.0}, // Posición inicial
+        {0, 0, 0}, // Posición inicial
         false, // Unidades en mm
         true, // movimiento absoluto
         {}, // No importa el valor de retorno
@@ -224,7 +224,7 @@ int main(void){
         // Comparar resultado con prueba.resultado_esperado y error con prueba.error_esperado
     }
 
-    int i = 3;
+    int i = 6;
     
     for ( PruebaTrayectoria& prueba : pruebas_error) {
         int error = OK;

@@ -44,8 +44,9 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                 if(!unidades){
                     distancia = aux[j] - posicion_actual[j];
                 }else{
-                    std::cout<<"DISTANCIA AUX: "<<aux[j] * MM_TO_INCH<<std::endl;
-                    std::cout<<"DISTANCIA POS ACTUAL: "<<posicion_actual[j]<<std::endl;
+                    
+                    //std::cout<<"DISTANCIA AUX: "<<aux[j] * MM_TO_INCH<<std::endl;
+                    //.std::cout<<"DISTANCIA POS ACTUAL: "<<posicion_actual[j]<<std::endl;
                     distancia = ((aux[j] * MM_TO_INCH)/10) - posicion_actual[j];
                     
                 }
@@ -53,6 +54,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                 if(distancia == -0 || distancia == 0){
                     distancia = 0;
                 }
+                
                 if(aux[j] >= area_trabajo[j]){
                     FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
                 }
@@ -68,7 +70,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                 }
             }
             
-            std::cout<<"DISTANCIA CALCULADA"<<distancia<<std::endl;
+            //std::cout<<"DISTANCIA CALCULADA"<<distancia<<std::endl;
             
             componentes[j] = distancia;
             vector += (distancia*distancia);
@@ -93,6 +95,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     }
 
     vector = sqrt(vector);
+    //std::cout<<"VECTOR: "<<vector;
     double tiempo = 0.0;
     switch (instruccion.getInstruccion())
     {
@@ -105,7 +108,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         for(int j=0; j<NUM_EJES; j++){
             if(parametros.num_pasos[j] != 0){
                 parametros.periodo_pasos[j] = (tiempo*60*10000000)/parametros.num_pasos[j];
-                std::cout<<"Periodo del paso Calculadora"<<parametros.periodo_pasos[j];
+                //std::cout<<"Periodo del paso Calculadora"<<parametros.periodo_pasos[j]<<std::endl;
             }else{
                 parametros.periodo_pasos[j] = 0;
             }
@@ -135,7 +138,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             //std::cout<<tiempo<<std::endl;
             for(int j=0; j<NUM_EJES; j++){
                 if(parametros.num_pasos[j] != 0){
-                    parametros.periodo_pasos[j] = (tiempo*60*1000000000)/parametros.num_pasos[j];
+                    parametros.periodo_pasos[j] = (tiempo*60*10000000)/parametros.num_pasos[j];
                 }else{
                     parametros.periodo_pasos[j] = 0;
                 }
