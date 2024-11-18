@@ -81,8 +81,11 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                                 aux->setInstruccion(MODO_DISTANCIA_INCREMENTAL);
                                 break;
                             case 92:
-                                tipo_instruccion = INSTRUCCION_CON_ARGUMENTOS_XYZ;
-                                aux->setInstruccion(TRASLADO_ORIGEN);
+                                {
+                                    tipo_instruccion = INSTRUCCION_CON_ARGUMENTOS_XYZ;
+                                    aux->setInstruccion(TRASLADO_ORIGEN);
+                                    break;
+                                }
                             default:
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);
                                 break;

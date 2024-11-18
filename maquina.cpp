@@ -56,6 +56,18 @@ int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
             case MODO_DISTANCIA_INCREMENTAL:
                 {this->modo_desplazamiento = false;}
                 break;
+            case TRASLADO_ORIGEN:
+                {
+                    gcode_valores valores= instruccion->valores;
+                    long *valores_ejes = (long *)&valores; 
+                    for(int i=0, j = X_PALABRA; i<NUM_EJES; i++){
+                        if((valores.bandera_palabras & j) != 0){
+                            this->posicion_xyz[i] = valores_ejes[i];
+                        }
+                        j = j<<1;
+                    }
+                }
+                break;
             default:
                 return INSTRUCCION_NO_SOPORTADA; //retornamos un error
                 break;
@@ -68,7 +80,7 @@ int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
                 std::cin.get();
                 break;
             case FIN_PROGRAMA:
-                return OK;
+                return PROGRAMA_TERMINADO;
                 break;
             case ENCENDER_HERRAMIENTA_HORARIO:
                 manipulador_actuadores->deshabilitar_herramienta();
@@ -112,9 +124,6 @@ int MaquinaCNC::ejecutar_instruccion(std::string instruccion){
 
 int MaquinaCNC::ejecutar_archivo(std::string ruta){
 
-    
-
-
     int error;
 
     /*Leer archivo*/
@@ -126,72 +135,33 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
     }
 
     error = OK;
-    std::queue<Instruccion *> * cola_espera = new std::queue<Instruccion *>();
-    
     std::chrono::time_point<std::chrono::high_resolution_clock> t_inicio = std::chrono::high_resolution_clock::now();
-    std::future<int> *resultado_futuro = NULL;
-    std::queue<std::string> lineas_archivo;
+    
+    
     while(!archivo_programa.eof()){
 
         std::getline(archivo_programa, linea);
-        lineas_archivo.push(linea);
-    }
-    archivo_programa.close();
-    while(!lineas_archivo.empty()){
-        linea = lineas_archivo.front();
-        /*leemos las n primeras lineas. Las interpretamos y las almacenamos*/
         if(linea.empty()) continue;
         std::queue<Instruccion *> cola_auxiliar = this->interprete_gcode->interpretar_bloque_gcode(linea,&error);
-
         if(error != OK) {
             obtener_error(error, linea);
             return error;
         }
-        std::cout<<"Instruccion interpretada: \t"<<linea<<std::endl;
-        if(cola_auxiliar.size() == 0) continue;
-
-        /*Guardamos las instrucciones en la cola de espera*/
-
         while(!cola_auxiliar.empty()){
-            cola_espera->push(cola_auxiliar.front());
+            Instruccion *instruccion = cola_auxiliar.front();
+            int resultado = this->ejecutar_instruccion(instruccion);
+            if(resultado != OK){
+                obtener_error(resultado, linea);
+                return resultado;
+            }
             cola_auxiliar.pop();
         }
-
-        if((cola_espera->size() >= BUFFER_INSTRUCCIONES_MAX) || (lineas_archivo.size() == 1)){
-            this->cola_ejecucion = new std::queue<Instruccion *>(*cola_espera);
-            if(resultado_futuro != NULL){
-                int resultado_cola_ejecutada = resultado_futuro->get();
-                if(resultado_cola_ejecutada != OK) return resultado_cola_ejecutada;
-            }
-            std::packaged_task<int()> ejecutar_cola([this](){
-                
-                while(true){
-                    if(this->cola_ejecucion->empty()){
-                        return OK;
-                    }
-                    Instruccion *instruccion = this->cola_ejecucion->front();
-
-                    int resultado = this->ejecutar_instruccion(instruccion);
-                    if(resultado != OK) return resultado;
-                    
-                    this->cola_ejecucion->pop();
-                    
-                }
-
-            });
-
-            resultado_futuro = new std::future<int>();
-            *resultado_futuro = ejecutar_cola.get_future();
-
-            std::thread hilo(std::move(ejecutar_cola));
-            cola_espera = new std::queue<Instruccion *>();
-        }
-
-        lineas_archivo.pop();
+        std::cout<<"OK"<<std::endl;
     }
+    archivo_programa.close();
+    
     
     std::chrono::time_point<std::chrono::high_resolution_clock> t_final = std::chrono::high_resolution_clock::now();
-
     std::chrono::duration<double> duracion_ejecucion = t_final - t_inicio;
 
     std::cout<<"Ejecucion de archivo: "<<ruta<< ". TERMINADA\tTiempo: "<<duracion_ejecucion.count()<<std::endl;

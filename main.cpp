@@ -42,6 +42,17 @@ int main(int argc, char const *argv[]) //
     }else{
         std::string nombre_archivo(argv[1]);
         std::cout<<nombre_archivo<<std::endl;
+
+        int resultado  = maquina.ejecutar_archivo(nombre_archivo);
+        if(resultado != OK){
+            if(resultado == PROGRAMA_TERMINADO){
+                std::cout<<"PROGRMA FINALIZADO"<<std::endl;
+            }else{
+                std::cout<<"PROGRMA FINALIZADO CON ERRORES"<<std::endl;
+            }
+            
+
+        }
     }
    
     return 0;

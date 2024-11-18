@@ -29,6 +29,8 @@
 #define ERROR_ARCHIVO_NO_HABIERTO 14
 #define ERROR_INSTRUCCION_NULA 15
 
+#define PROGRAMA_TERMINADO 30
+
 std::string obtener_error(int error, std::string linea);
 
 #endif
