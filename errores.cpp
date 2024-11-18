@@ -23,10 +23,32 @@ std::string obtener_error(int error, std::string linea){
     case INSTRUCCION_NO_SOPORTADA:
         return  "El insterprete no porta alguna instruccion en el bloque >> " + linea;
         break;
+    case ERROR_BLOQUE_SIN_INSTRUCCION:
+        return "No se encontraron palabras con instrucciones ejecutables en el bloque >> " + linea;
+        break;
     case ERROR_INSTRUCCION_SIN_DESPLAZAMIENTO:
         return "Error: No se pudo calcular la trayectoria, ya que la instruccion no es desplazamiento";
+        break;
     case ERROR_TRAYECTORIA_FUERA_AREA:
         return "Error: Los argumentos superan los limites del area de trabajo en el bloque >> " + linea;
+        break;
+    case ERROR_SENIAL_NO_CREADA:
+        return "Las señales de manipulacion no pudieron crearse para el bloque >> " + linea;
+    case ERROR_TIMER_NO_CREADO:
+        return "No se pudieron crear los temporizadores de manipulacion para el bloque >> " + linea;
+        break;
+    case ERROR_TIMER_NO_CONFIGURADO:
+        return "No se pudo configurar los Timers para el bloque >> " + linea;
+        break;
+    case ERROR_TIMER_NO_DESTRUIDO:
+        return "No se pudo destruir los timers para el bloque >> " + linea;
+        break;
+    case ERROR_ARCHIVO_NO_HABIERTO:
+        return "No se pudo habir el archivo: " + linea;
+        break;
+    case ERROR_INSTRUCCION_NULA:
+        return "La instruccion a ejecutar es invalida" + linea;
+        break;
     default:
         break;
     }

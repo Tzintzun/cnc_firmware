@@ -131,6 +131,7 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
     archivo_programa.open(ruta, std::ios::in);
     std::string linea;
     if(archivo_programa.fail()){
+        std::cout<<obtener_error(ERROR_ARCHIVO_NO_HABIERTO, ruta)<<std::endl;
         return ERROR_ARCHIVO_NO_HABIERTO;
     }
 
@@ -144,14 +145,14 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
         if(linea.empty()) continue;
         std::queue<Instruccion *> cola_auxiliar = this->interprete_gcode->interpretar_bloque_gcode(linea,&error);
         if(error != OK) {
-            obtener_error(error, linea);
+            std::cout<<obtener_error(error, linea)<<std::endl;
             return error;
         }
         while(!cola_auxiliar.empty()){
             Instruccion *instruccion = cola_auxiliar.front();
             int resultado = this->ejecutar_instruccion(instruccion);
             if(resultado != OK){
-                obtener_error(resultado, linea);
+                std::cout<<obtener_error(resultado, linea)<<std::endl;
                 return resultado;
             }
             cola_auxiliar.pop();
