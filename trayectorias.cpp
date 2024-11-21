@@ -151,24 +151,24 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
         break;
     }
     *error = OK;
-    for(int i=0; i<NUM_EJES;i++ ){
-        
-        if(sistema_cordenadas){
-            if(!unidades){
-                posicion_actual[i] = aux[i] ;
-            }else{
-                posicion_actual[i] = (aux[i] * MM_TO_INCH)/10;
-            }
-            
-        }else{
-            if(!unidades){
-                posicion_actual[i] += aux[i];
-            }else{
-                posicion_actual[i] += (aux[i] * MM_TO_INCH)/10;
-            }
-           
-        }
-            
+    for(int i=0, j=X_PALABRA; i<NUM_EJES;i++ ){
+        if((valores.bandera_palabras & j) != 0){
+        	if(sistema_cordenadas){
+           	 	if(!unidades){
+                		posicion_actual[i] = aux[i] ;
+            		}else{
+                		posicion_actual[i] = (aux[i] * MM_TO_INCH)/10;
+            		}
+
+        	}else{
+            		if(!unidades){
+                		posicion_actual[i] += aux[i];
+            		}else{
+                		posicion_actual[i] += (aux[i] * MM_TO_INCH)/10;
+            		}
+        	}
+	}
+        j=j<<1;
         
     }
     return parametros;
