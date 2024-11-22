@@ -102,10 +102,10 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                         switch (valor_entero)
                         {
                             case 20:
-                                aux->setInstruccion(CONF_UNIDADES_MILIMETROS);
+                                aux->setInstruccion(CONF_UNIDADES_PULGADAS);
                                 break;
                             case 21:
-                                aux->setInstruccion(CONF_UNIDADES_PULGADAS);
+                                aux->setInstruccion(CONF_UNIDADES_MILIMETROS);
                                 break;
                             default:
                                 FAIL_INTERPRETE(INSTRUCCION_NO_SOPORTADA);

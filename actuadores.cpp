@@ -18,9 +18,7 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     this->deshabilitar_herramienta();
 
     wiringPiSetup () ;
-    //std::cout<<"Configurando modo pines"<<std::endl;
     for(int i = 0; i<NUM_EJES;i++){
-        //std::cout<<"\t"<<pin_eje[i]<<" "<<pin_dir_ejes[i]<<std::endl;
         CONFIGURAR_PIN_SALIDA(pin_eje[i]);
         CONFIGURAR_PIN_SALIDA(pin_dir_ejes[i]);
         DESHABILITAR_PIN(pin_eje[i]);
@@ -41,7 +39,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     temporizadores_listos = false;
     /*Configuramos la señal*/
 
-    std::cout<<"Configurando señal"<<std::endl;
+    //std::cout<<"Configurando señal"<<std::endl;
     struct sigaction *senial_timer;
     senial_timer = (struct sigaction *)malloc(sizeof(struct sigaction));
     senial_timer->sa_flags = SA_SIGINFO;
@@ -54,7 +52,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
 
     /*Configuramos las señales de control*/
 
-    std::cout<<"Configurando direccion de pines"<<std::endl;
+    //std::cout<<"Configurando direccion de pines"<<std::endl;
 
     for (int i=0;i<NUM_EJES;i++){
         if(parametros.direccion[i]){
@@ -65,7 +63,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     }
     
     /*Configuramos los temporizadores*/
-    std::cout<<"Configurando temporizadores"<<std::endl;
+    //std::cout<<"Configurando temporizadores"<<std::endl;
 
     for(int i=0; i<NUM_EJES;i++){
         
@@ -99,8 +97,8 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
         configuracion->estado = false;
         configuracion->pin = pin_eje[i];
         actuadores[*timer_id] = configuracion;
-        std::cout<<"PIN "<<pin_eje[i]<<std::endl;
-        std::cout<<"TIMER ID "<<*timer_id<<std::endl;
+        //std::cout<<"PIN "<<pin_eje[i]<<std::endl;
+        //std::cout<<"TIMER ID "<<*timer_id<<std::endl;
         
         if(timer_settime(*timer, 0, its, nullptr) == -1){
             FAIL_MANIPULACION_ACTUADOR(ERROR_TIMER_NO_CONFIGURADO);
@@ -113,7 +111,7 @@ int ManipularActuadores::ejecutar_movimiento(parametros_actuadores parametros){
     
     /*Esperamos a que los pasos terminen*/
 
-    std::cout<<"ESPERANDO..."<<std::endl;
+    //std::cout<<"ESPERANDO..."<<std::endl;
 
     while (true)
     {

@@ -41,12 +41,11 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             
             long distancia = 0;
             if(sistema_cordenadas){
-                if(!unidades){
+                if(unidades){
                     distancia = aux[j] - posicion_actual[j];
                 }else{
                     
-                    //std::cout<<"DISTANCIA AUX: "<<aux[j] * MM_TO_INCH<<std::endl;
-                    //.std::cout<<"DISTANCIA POS ACTUAL: "<<posicion_actual[j]<<std::endl;
+                    
                     distancia = ((aux[j] * MM_TO_INCH)/10) - posicion_actual[j];
                     
                 }
@@ -59,7 +58,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
                     FAIL_CALCULO_TRAYECTORIA(ERROR_TRAYECTORIA_FUERA_AREA);
                 }
             }else{
-                if(!unidades){
+                if(unidades){
                     distancia = aux[j];
                 }else{
                     distancia = (aux[j] * MM_TO_INCH)/10;
@@ -100,7 +99,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     switch (instruccion.getInstruccion())
     {
     case DESPLAZAMIENTO_LINEAL_LIBRE:
-        std::cout<<"DESPLAZAMIENTO LINEAL LIBRE";
+        //std::cout<<"DESPLAZAMIENTO LINEAL LIBRE";
         tiempo = vector/(feedrate_desplazamiento); // (min/mm)*mm = min
                                                         // seg = 60*min;
                                                         // nanoseg = 1000000000*seg
@@ -118,7 +117,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     case INTERPOLACION_LINEAL:
 
         if(instruccion.valores.bandera_palabras & F_PALABRA && (instruccion.valores.f > 0.0)){ //configurar una velocidad minima;
-            if(!unidades){
+            if(unidades){
                 tiempo = vector/(instruccion.valores.f);
             }else{
                 tiempo = vector/((instruccion.valores.f*MM_TO_INCH)/10);
@@ -154,14 +153,14 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     for(int i=0, j=X_PALABRA; i<NUM_EJES;i++ ){
         if((valores.bandera_palabras & j) != 0){
         	if(sistema_cordenadas){
-           	 	if(!unidades){
+           	 	if(unidades){
                 		posicion_actual[i] = aux[i] ;
             		}else{
                 		posicion_actual[i] = (aux[i] * MM_TO_INCH)/10;
             		}
 
         	}else{
-            		if(!unidades){
+            		if(unidades){
                 		posicion_actual[i] += aux[i];
             		}else{
                 		posicion_actual[i] += (aux[i] * MM_TO_INCH)/10;
