@@ -38,7 +38,7 @@ int main(int argc, char const *argv[]) //
             }
             respuesta = maquina.ejecutar_instruccion(gcode_bloque);
             if( respuesta != OK ){
-                std::cout<<obtener_error(respuesta, gcode_bloque)<<std::endl;
+                std::cout<<"\033[31m"<<obtener_error(respuesta, gcode_bloque)<<"\033[0m"<<std::endl;
             }
 
         }

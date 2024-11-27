@@ -21,7 +21,13 @@ MaquinaCNC::MaquinaCNC(INIReader reader){
 }
 
 int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
-
+    std::vector<std::string> color_ejes = {
+        "\033[35m", // Magenta
+        "\033[34m", // Azul
+        "\033[33m", // Amarillo
+    };
+    std::string color_instruccion = "\033[46m";
+    std::string resetea_colores = "\033[0m";
     if(instruccion == NULL){
         return ERROR_INSTRUCCION_NULA;
     }
@@ -34,14 +40,14 @@ int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
 
                 {
                     if(instruccion->getInstruccion() == DESPLAZAMIENTO_LINEAL_LIBRE){
-                        std::cout<<"DESPLAZAMIENTO LINEAL LIBRE"<<std::endl;
+                        std::cout<<color_instruccion<<"DESPLAZAMIENTO LINEAL LIBRE"<<resetea_colores<<std::endl;
                     }else{
-                        std::cout<<"INTERPOLACION LINEAL"<<std::endl;
+                        std::cout<<color_instruccion<<"INTERPOLACION LINEAL"<<resetea_colores<<std::endl;
                     }
                     parametros_actuadores parametros = this->calculadora->calcular_trayectoria_lineal(*instruccion, this->posicion_xyz, this->sistema_unidades, this->modo_desplazamiento, &error);
                     std::cout<<"Parametros:"<<std::endl;
                     for(int i=0; i<NUM_EJES; i++){
-                        std::cout<<"\t"<<(char)(i+88)<<"(NUMERO PASOS:"<<parametros.num_pasos[i]<<", PERIODO PASO:"<<parametros.periodo_pasos[i]<<")"<<std::endl;
+                        std::cout<<"\t"<<color_ejes[i]<<(char)(i+88)<<"(NUMERO PASOS:"<<parametros.num_pasos[i]<<", PERIODO PASO:"<<parametros.periodo_pasos[i]<<")"<<resetea_colores<<std::endl;
                     }
                     if(error != OK){
                         return error;
@@ -54,31 +60,31 @@ int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
                 break;
             case CONF_UNIDADES_MILIMETROS:
                 {
-                    std::cout<<"CONFIGURANDO UNIDADES EN MILIMETROS"<<std::endl;
+                    std::cout<<color_instruccion<<"CONFIGURANDO UNIDADES EN MILIMETROS"<<resetea_colores<<std::endl;
                     this->sistema_unidades = true;
                 }
                 break;
             case CONF_UNIDADES_PULGADAS:
                 {
-                    std::cout<<"CONFIGURANDO UNIDADES EN PULGADAS"<<std::endl;
+                    std::cout<<color_instruccion<<"CONFIGURANDO UNIDADES EN PULGADAS"<<resetea_colores<<std::endl;
                     this->sistema_unidades = false;
                 }
                 break;
             case MODO_DISTANCIA_ABSOLUTO: 
                 {
-                    std::cout<<"CONFIGURANDO SISTEMA DE CORDENADAS ABSOLUTAS"<<std::endl;
+                    std::cout<<color_instruccion<<"CONFIGURANDO SISTEMA DE CORDENADAS ABSOLUTAS"<<resetea_colores<<std::endl;
                     this->modo_desplazamiento = true;
                 }
                 break;
             case MODO_DISTANCIA_INCREMENTAL:
                 {
-                    std::cout<<"CONFIGURANDO SISTEMA DE CORDENADAS RELATIVAS"<<std::endl;
+                    std::cout<<color_instruccion<<"CONFIGURANDO SISTEMA DE CORDENADAS RELATIVAS"<<resetea_colores<<std::endl;
                     this->modo_desplazamiento = false;                    
                 }
                 break;
             case TRASLADO_ORIGEN:
                 {
-                    std::cout<<"TRADALANDO POSICION DE LA MAQUINA"<<std::endl;
+                    std::cout<<color_instruccion<<"TRADALANDO POSICION DE LA MAQUINA"<<resetea_colores<<std::endl;
                     gcode_valores valores= instruccion->valores;
                     long *valores_ejes = (long *)&valores; 
                     std::cout<<"Nueva posicion:"<<std::endl;
@@ -86,7 +92,7 @@ int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
                         if((valores.bandera_palabras & j) != 0){
                             this->posicion_xyz[i] = valores_ejes[i];
                         }
-                        std::cout<<(char)(i+88)<<": "<<this->posicion_xyz[i]<<std::endl;
+                        std::cout<<color_ejes[i]<<(char)(i+88)<<": "<<this->posicion_xyz[i]<<resetea_colores<<std::endl;
                         j = j<<1;
                     }
                 }
@@ -99,38 +105,38 @@ int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
     case TIPO_INSTRUCCION_M:
         switch (instruccion->getInstruccion()){
             case PAUSAR_PROGRAMA:
-                std::cout<<"ESPERA"<<std::endl;
+                std::cout<<color_instruccion<<"ESPERA"<<resetea_colores<<std::endl;
                 std::cout<<"Pulsa una tecla para continuar"; //posteriormente se puede programar la lectura de un boton externo.
                 std::cin.get();
                 break;
             case FIN_PROGRAMA:
-                std::cout<<"FIN DEL PROGRAMA"<<std::endl;
+                std::cout<<color_instruccion<<"FIN DEL PROGRAMA"<<resetea_colores<<std::endl;
                 return PROGRAMA_TERMINADO;
                 break;
             case ENCENDER_HERRAMIENTA_HORARIO:
-                std::cout<<"HERRAIENTA HABILITADA SENTIDO HORARIO"<<std::endl;
+                std::cout<<color_instruccion<<"HERRAIENTA HABILITADA SENTIDO HORARIO"<<resetea_colores<<std::endl;
                 manipulador_actuadores->deshabilitar_herramienta();
                 manipulador_actuadores->establecer_herramienta_sentido_horario();
                 manipulador_actuadores->habilitar_herramienta();
                 break;
             case ENCENDER_HERRAMIENTA_ANTIHORARIO:
-                std::cout<<"HERRAIENTA HABILITADA SENTIDO ANTI-HORARIO"<<std::endl;
+                std::cout<<color_instruccion<<"HERRAIENTA HABILITADA SENTIDO ANTI-HORARIO"<<resetea_colores<<std::endl;
                 manipulador_actuadores->deshabilitar_herramienta();
                 manipulador_actuadores->establecer_herramienta_sentido_antihorario();
                 manipulador_actuadores->habilitar_herramienta();
                 break;
             case DETENER_HERRAMIENTA:
-                std::cout<<"HERRAMIENTA DES-HABILITADA"<<std::endl;
+                std::cout<<color_instruccion<<"HERRAMIENTA DES-HABILITADA"<<resetea_colores<<std::endl;
                 manipulador_actuadores->deshabilitar_herramienta();
                 break;
             default:
-                std::cout<<"INSTRUCCION NO SOPORTADA"<<std::endl;
+                std::cout<<color_instruccion<<"INSTRUCCION NO SOPORTADA"<<resetea_colores<<std::endl;
                 return INSTRUCCION_NO_SOPORTADA;
                 break;
         }
         break;
     }
-    std::cout<<"<<COMANDO EJECUTADO EXITOSAMENTE>>"<<std::endl;
+    std::cout<<"\033[32m"<<"<<COMANDO EJECUTADO EXITOSAMENTE>>"<<"\033[0m"<<std::endl;
     return OK;
 }
 
@@ -182,7 +188,7 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
             Instruccion *instruccion = cola_auxiliar.front();
             int resultado = this->ejecutar_instruccion(instruccion);
             if(resultado != OK){
-                std::cout<<obtener_error(resultado, linea)<<std::endl;
+                std::cout<<"\033[31m"<<obtener_error(resultado, linea)<<"\033[0m"<<std::endl;
                 return resultado;
             }
             cola_auxiliar.pop();
@@ -196,7 +202,7 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
     std::chrono::time_point<std::chrono::high_resolution_clock> t_final = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duracion_ejecucion = t_final - t_inicio;
 
-    std::cout<<"Ejecucion de archivo: "<<ruta<< ". TERMINADA\tTiempo: "<<duracion_ejecucion.count()<<std::endl;
+    std::cout<<"Ejecucion de archivo: "<<ruta<< ".\033[32m TERMINADA CON EXITO\033[0m\tTiempo: "<<duracion_ejecucion.count()<<std::endl;
     return OK;
 
 }
