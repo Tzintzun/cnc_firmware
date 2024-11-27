@@ -14,7 +14,7 @@ MaquinaCNC::MaquinaCNC(INIReader reader){
     this->interprete_gcode = new Interprete();
     this->manipulador_actuadores = new ManipularActuadores(reader);
     this->router = new Herramienta();
-    this->sistema_unidades = false;
+    this->sistema_unidades = true;
     this->modo_desplazamiento = true;
    
 
@@ -130,6 +130,7 @@ int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
         }
         break;
     }
+    std::cout<<"<<COMANDO EJECUTADO EXITOSAMENTE>>"<<std::endl;
     return OK;
 }
 
@@ -166,12 +167,12 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
 
     error = OK;
     std::chrono::time_point<std::chrono::high_resolution_clock> t_inicio = std::chrono::high_resolution_clock::now();
-    
-    
+    int num_lineas = 0;
     while(!archivo_programa.eof()){
 
         std::getline(archivo_programa, linea);
         if(linea.empty()) continue;
+	std::cout<<"~"<<num_lineas<<": "<<linea<<std::endl;
         std::queue<Instruccion *> cola_auxiliar = this->interprete_gcode->interpretar_bloque_gcode(linea,&error);
         if(error != OK) {
             std::cout<<obtener_error(error, linea)<<std::endl;
@@ -186,7 +187,8 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
             }
             cola_auxiliar.pop();
         }
-        std::cout<<"OK"<<std::endl;
+        //std::cout<<"OK"<<std::endl;
+	num_lineas++;
     }
     archivo_programa.close();
     

@@ -17,7 +17,7 @@ ManipularActuadores::ManipularActuadores(INIReader reader_config){
     this->router = new Herramienta();
     this->deshabilitar_herramienta();
 
-    wiringPiSetup () ;
+    wiringPiSetup();
     for(int i = 0; i<NUM_EJES;i++){
         CONFIGURAR_PIN_SALIDA(pin_eje[i]);
         CONFIGURAR_PIN_SALIDA(pin_dir_ejes[i]);
