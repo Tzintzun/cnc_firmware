@@ -1,13 +1,15 @@
 #include <iostream>
 #include <string>
 #include <queue>
-
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #include "interprete.h"
 #include "errores.h"
 #include "inih/cpp/INIReader.h"
 #include "maquina.h"
 #include "trayectorias.h"
+
 
 int main(int argc, char const *argv[]) //
 {
@@ -27,10 +29,12 @@ int main(int argc, char const *argv[]) //
         while (true)
         {
             std::cout<<">>>";
-            std::getline(std::cin,gcode_bloque);
+            gcode_bloque = readline(">>> ");
             std::cout<<gcode_bloque<<std::endl;
             if(gcode_bloque.empty()){
                 continue;
+            }else{
+                add_history(gcode_bloque);
             }
             respuesta = maquina.ejecutar_instruccion(gcode_bloque);
             if( respuesta != OK ){
