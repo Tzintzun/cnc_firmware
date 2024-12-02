@@ -120,7 +120,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
             if(unidades){
                 tiempo = vector/(instruccion.valores.f);
             }else{
-                tiempo = vector/((instruccion.valores.f*MM_TO_INCH)/10);
+                tiempo = vector/(instruccion.valores.f);
             }
             
             

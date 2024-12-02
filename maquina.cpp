@@ -84,12 +84,13 @@ int MaquinaCNC::ejecutar_instruccion(Instruccion *instruccion){
                 break;
             case TRASLADO_ORIGEN:
                 {
-                    std::cout<<color_instruccion<<"TRADALANDO POSICION DE LA MAQUINA"<<resetea_colores<<std::endl;
+                    //std::cout<<color_instruccion<<"TRADALANDO POSICION DE LA MAQUINA"<<resetea_colores<<std::endl;
                     gcode_valores valores= instruccion->valores;
                     long *valores_ejes = (long *)&valores; 
                     std::cout<<"Nueva posicion:"<<std::endl;
                     for(int i=0, j = X_PALABRA; i<NUM_EJES; i++){
                         if((valores.bandera_palabras & j) != 0){
+			    //std::cout<<j<<" "<<valores_ejes[i]<<std::endl<<instruccion->toString()<<std::endl;
                             this->posicion_xyz[i] = valores_ejes[i];
                         }
                         std::cout<<color_ejes[i]<<(char)(i+88)<<": "<<this->posicion_xyz[i]<<resetea_colores<<std::endl;
@@ -174,7 +175,8 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
     error = OK;
     std::chrono::time_point<std::chrono::high_resolution_clock> t_inicio = std::chrono::high_resolution_clock::now();
     int num_lineas = 0;
-    while(!archivo_programa.eof()){
+    bool fin_programa = false;
+    while(!archivo_programa.eof() && !fin_programa ){
 
         std::getline(archivo_programa, linea);
         if(linea.empty()) continue;
@@ -187,9 +189,13 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
         while(!cola_auxiliar.empty()){
             Instruccion *instruccion = cola_auxiliar.front();
             int resultado = this->ejecutar_instruccion(instruccion);
-            if(resultado != OK){
+            if(resultado != OK && resultado != PROGRAMA_TERMINADO){
                 std::cout<<"\033[31m"<<obtener_error(resultado, linea)<<"\033[0m"<<std::endl;
                 return resultado;
+            }
+            if(resultado == PROGRAMA_TERMINADO){
+                fin_programa =true;
+                break;
             }
             cola_auxiliar.pop();
         }
@@ -202,7 +208,7 @@ int MaquinaCNC::ejecutar_archivo(std::string ruta){
     std::chrono::time_point<std::chrono::high_resolution_clock> t_final = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duracion_ejecucion = t_final - t_inicio;
 
-    std::cout<<"Ejecucion de archivo: "<<ruta<< ".\033[32m TERMINADA CON EXITO\033[0m\tTiempo: "<<duracion_ejecucion.count()<<std::endl;
+    std::cout<<"Ejecucion de archivo: "<<ruta<< ".\033[32m TERMINADA CON EXITO\033[0m\tTiempo: "<<duracion_ejecucion.count()<<"s"<<std::endl;
     return OK;
 
 }

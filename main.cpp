@@ -28,13 +28,12 @@ int main(int argc, char const *argv[]) //
         int respuesta = OK;
         while (true)
         {
-            std::cout<<">>>";
             gcode_bloque = readline(">>> ");
             std::cout<<gcode_bloque<<std::endl;
             if(gcode_bloque.empty()){
                 continue;
             }else{
-                add_history(gcode_bloque);
+                add_history(gcode_bloque.c_str());
             }
             respuesta = maquina.ejecutar_instruccion(gcode_bloque);
             if( respuesta != OK ){

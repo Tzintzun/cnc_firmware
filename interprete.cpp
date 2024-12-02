@@ -82,8 +82,10 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                                 break;
                             case 92:
                                 {
+				    instruccion_argumentos = new Instruccion();
                                     tipo_instruccion = INSTRUCCION_CON_ARGUMENTOS_XYZ;
-                                    aux->setInstruccion(TRASLADO_ORIGEN);
+                                    instruccion_argumentos->setInstruccion(TRASLADO_ORIGEN);
+				    aux = instruccion_argumentos;
                                     break;
                                 }
                             default:
@@ -217,7 +219,9 @@ std::queue<Instruccion*> Interprete::interpretar_bloque_gcode(std::string linea,
                     FAIL_INTERPRETE(ERROR_ARGUMENTO_REPETIDO);
                 }
                 if(instruccion_argumentos != NULL){
+		    //std::cout<<valor<<std::endl;
                     instruccion_argumentos->valores.x = valor;
+		    //std::cout<<instruccion_argumentos->valores.x<<std::endl;
                     bandera_palabra |= X_PALABRA;
                 }
                 break;

@@ -5,7 +5,7 @@ SRCS = main.cpp maquina.cpp herramienta.cpp errores.cpp interprete.cpp trayector
 OBJS = $(patsubst %.cpp, build/%.o, $(patsubst %.c, build/%.o, $(SRCS)))
 
 main: $(OBJS) build/
-	$(CC) $(CFLAGS) $(OBJS) -lwiringPi -o $@
+	$(CC) $(CFLAGS) $(OBJS) -lwiringPi -lreadline -o $@
 
 build/%.o: %.cpp build/
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
