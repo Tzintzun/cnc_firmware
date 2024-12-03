@@ -13,7 +13,7 @@ sudo apt-get install libreadline-dev
 Descargar git y descargar el repositorio.
 ```bash
 sudo apt install git
-git clone 
+git clone https://github.com/Tzintzun/cnc_firmware.git
 
 cd cnc_firmware
 git clone https://github.com/benhoyt/inih.git
