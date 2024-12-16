@@ -39,7 +39,7 @@ int main(void){
     PruebaTrayectoria prueba1 = {
         instruccion1,
         {0, 0, 0}, // Posición inicial
-        false, // Unidades en mm
+        true, // Unidades en mm
         true, // movimiento absoluto
         { // Resultado esperado
             {500, 250, 50}, // num_pasos
@@ -60,7 +60,7 @@ int main(void){
     PruebaTrayectoria prueba2 = {
         instruccion2,
         {0, 0, 0}, // Posición inicial
-        true, // Unidades en pulgadas
+        false, // Unidades en pulgadas
         true, // movimiento absoluto
         { // Resultado esperado
             {8, 4, 0}, // num_pasos (conversión a mm)
@@ -81,7 +81,7 @@ int main(void){
     PruebaTrayectoria prueba3 = {
         instruccion3,
         {0, 0, 0}, // Posición inicial
-        true, // Unidades en pulgadas
+        false, // Unidades en pulgadas
         true, // movimiento absoluto
         { // Resultado esperado
             {635, 254, 0}, // num_pasos (conversión a mm)
@@ -102,7 +102,7 @@ int main(void){
     PruebaTrayectoria prueba4 = {
         instruccion4,
         {0, 0, 0}, // Posición inicial
-        false, // Unidades en mm
+        true, // Unidades en mm
         true, // movimiento absoluto
         { // Resultado esperado
             {627, 136, 0}, // num_pasos (conversión a mm)
@@ -123,7 +123,7 @@ int main(void){
     PruebaTrayectoria prueba5 = {
         instruccion5,
         {0, 0, 0}, // Posición inicial
-        false, // Unidades en mm
+        true, // Unidades en mm
         false, // movimiento relativo
         { // Resultado esperado
             {500, 136, 0}, // num_pasos (conversión a mm)
@@ -143,7 +143,7 @@ int main(void){
     PruebaTrayectoria prueba6 = {
         instruccion6,
         {0, 0, 0}, // Posición inicial
-        false, // Unidades en mm (no importa en este caso)
+        true, // Unidades en mm (no importa en este caso)
         true, // movimiento absoluto
         {}, // No importa el valor de retorno
         ERROR_INSTRUCCION_SIN_DESPLAZAMIENTO
@@ -154,14 +154,14 @@ int main(void){
     Instruccion instruccion7;
     instruccion7.setInstruccion(INTERPOLACION_LINEAL); // G1
     instruccion7.valores.x = 40000; // Fuera del límite de área (300 mm)
-    instruccion7.valores.y = 5000;
+    instruccion7.valores.y = 50000;
     instruccion7.valores.bandera_palabras = X_PALABRA | Y_PALABRA;
 
     PruebaTrayectoria prueba7 = {
         instruccion7,
         {0, 0, 0}, // Posición inicial
-        false, // Unidades en mm
-        true, // movimiento absoluto
+        true, // Unidades en mm
+        false, // movimiento absoluto
         {}, // No importa el valor de retorno
         ERROR_TRAYECTORIA_FUERA_AREA
     };
@@ -234,7 +234,7 @@ int main(void){
         if(error == prueba.error_esperado){     
             std::cout<<"TEST "<<i<<": OK";
         }else{
-            std::cout<<"TEST "<<i<<": ERROR";
+            std::cout<<"TEST "<<i<<": ERROR"<<error;
         }
         i++;
         std::cout<<std::endl;

@@ -30,7 +30,7 @@ parametros_actuadores CalculadoraTrayectorias::calcular_trayectoria_lineal(Instr
     long *aux = (long *)&valores;
     long vector = 0;
     long componentes[NUM_EJES];
-    memset(componentes,0, sizeof(double)*3);
+    memset(componentes,0, sizeof(long)*NUM_EJES);
 
     /*Calculamos los pasos * milimetro*/
     for(int j=0, i= X_PALABRA; j<NUM_EJES; j++){
