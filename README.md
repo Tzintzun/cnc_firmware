@@ -2,6 +2,9 @@
 Firmware para el sistema embebido de manipulación de máquinas CNC. TT 2024-B038 ESOCM IPN.
 El proyecto fue desarrollado en C/C++ y cuenta con la capacidad de interpretar y ejecutar código G.
 
+## Estado del proyecto
+El proyecto está en un estado de funcionalidad básica. El próximo paso es la implementación de control de velocidad para los ejes de movimiento.
+
 ## Características principales
 - Interpretar una lista de códigos G básicos.
 - Controlar el movimiento de una maquina en los ejes X, Y y Z.
