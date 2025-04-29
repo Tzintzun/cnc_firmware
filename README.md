@@ -1,5 +1,13 @@
-# Manual de usuario: Firmware para la manipulación de máquinas CNC 
-Firmware para el sistema embebido de manipulación de máquinas CNC. TT 2024-B038 ESOCM IPN
+# Firmware para la manipulación de máquinas CNC - Proyecto de Titulación
+Firmware para el sistema embebido de manipulación de máquinas CNC. TT 2024-B038 ESOCM IPN.
+El proyecto fue desarrollado en C/C++ y cuenta con la capacidad de interpretar y ejecutar código G.
+
+## Características principales
+- Interpretar una lista de códigos G básicos.
+- Controlar el movimiento de una maquina en los ejes X, Y y Z.
+- Interfaz por línea de comandos.
+- Ejecución de archivos .gcode .
+- Compatibilidad con la gama SBC de RaspberryPi.
 
 ## Requisitos del sistema
 - Raspberry Pi Zero 2 W
@@ -11,7 +19,7 @@ Firmware para el sistema embebido de manipulación de máquinas CNC. TT 2024-B03
 - Biblioteca readline GNU
 - Git
 ```shell
-sudo apt-get install git libreadline-dev
+sudo apt-get install gcc git libreadline-dev
 ```
 
 Descargar git y descargar el repositorio.
@@ -30,7 +38,7 @@ Se compila el proyecto con MAKE. Si se requiere hacer alguna modificación, cons
 ```shell
 make
 ```
-<div style="page-break-after: always;"></div>
+
 
 Se genera un archivo ejecutable con el nombre `main`.
 ```shell
@@ -73,79 +81,80 @@ PIN_HABILITAR_EJES=7
 PIN_HABILITAR_HERRAMIENTA=25
 PIN_DIR_HERRAMIENTA=27
 ```
-<div style="page-break-after: always;"></div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Parámetro</th>
-            <th align="center">Descripción</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td align="center">MAX_X_DIM</td>
-            <td rowspan=3>Dimensión de los ejes de la máquina.</td>
-        </tr>
-        <tr>
-            <td align="center">MAX_Y_DIM</td>
-        </tr>
-        <tr>
-            <td align="center">MAX_Z_DIM</td>
-        </tr>
-        <tr>
-            <td>PASOS_MM_X</td>
-            <td rowspan=3>Pasos por milímetro para cada eje de movimiento. Este valor depende de la configuración mecánica de la máquina.</td>
-        </tr>
-        <tr>
-            <td>PASOS_MM_Y</td>
-        </tr>
-        <tr>
-            <td>PASOS_MM_Z</td>
-        </tr>
-        <tr>
-            <td>FEEDRATE</td>
-            <td>Velocidad de avance por defecto. Se utiliza en el comando G0 y en caso de que el argumento F no esté presente en el comando G1. Las unidades son mm/minuto o pulgadas/minuto dependiendo del sistema de unidades.</td>
-        </tr>
-        <tr>
-            <td>PIN_EJE_X</td>
-            <td rowspan=3>Pin GPIO para la señal PWM que controla el número de pasos del motor.</td>
-        </tr>
-        <tr>
-            <td>PIN_EJE_Y</td>
-        </tr>
-        <tr>
-            <td>PIN_EJE_Z</td>
-        </tr>
-        <tr>
-            <td>PIN_DIR_EJE_X</td>
-            <td rowspan=3>Pin GPIO para la señal que controla la dirección de giro de los motores a pasos.</td>
-        </tr>
-        <tr>
-            <td>PIN_DIR_EJE_Y</td>
-        </tr>
-        <tr>
-            <td>PIN_DIR_EJE_Z</td>
-        </tr>
-        <tr>
-            <td>PIN_HABILITAR_EJES</td>
-            <td>Pin GPIO que habilita los motores de cada uno de los ejes.</td>
-        </tr>
-        <tr>
-            <td>PIN_HABILITAR_HERRAMIENTA</td>
-            <td>Pin que activa la herramienta. Ya que cada máquina CNC puede tener una distinta herramienta, este pin solo tiene los estados de Alto y Bajo. Si se requiere una funcionalidad específica, consulte la Documentación Técnica.</td>
-        </tr>
-        <tr>
-            <td>PIN_DIR_HERRAMIENTA</td>
-            <td>Pin que define la dirección de la herramienta. Ya que cada máquina CNC puede tener una distinta herramienta, este pin solo tiene los estados de Alto y Bajo. Si se requiere una funcionalidad específica, consulte la Documentación Técnica.</td>
-        </tr>
-    </tbody>
-</table>
+
+
+    
+        
+            Parámetro
+            Descripción
+        
+    
+    
+        
+            MAX_X_DIM
+            Dimensión de los ejes de la máquina.
+        
+        
+            MAX_Y_DIM
+        
+        
+            MAX_Z_DIM
+        
+        
+            PASOS_MM_X
+            Pasos por milímetro para cada eje de movimiento. Este valor depende de la configuración mecánica de la máquina.
+        
+        
+            PASOS_MM_Y
+        
+        
+            PASOS_MM_Z
+        
+        
+            FEEDRATE
+            Velocidad de avance por defecto. Se utiliza en el comando G0 y en caso de que el argumento F no esté presente en el comando G1. Las unidades son mm/minuto o pulgadas/minuto dependiendo del sistema de unidades.
+        
+        
+            PIN_EJE_X
+            Pin GPIO para la señal PWM que controla el número de pasos del motor.
+        
+        
+            PIN_EJE_Y
+        
+        
+            PIN_EJE_Z
+        
+        
+            PIN_DIR_EJE_X
+            Pin GPIO para la señal que controla la dirección de giro de los motores a pasos.
+        
+        
+            PIN_DIR_EJE_Y
+        
+        
+            PIN_DIR_EJE_Z
+        
+        
+            PIN_HABILITAR_EJES
+            Pin GPIO que habilita los motores de cada uno de los ejes.
+        
+        
+            PIN_HABILITAR_HERRAMIENTA
+            Pin que activa la herramienta. Ya que cada máquina CNC puede tener una distinta herramienta, este pin solo tiene los estados de Alto y Bajo. Si se requiere una funcionalidad específica, consulte la Documentación Técnica.
+        
+        
+            PIN_DIR_HERRAMIENTA
+            Pin que define la dirección de la herramienta. Ya que cada máquina CNC puede tener una distinta herramienta, este pin solo tiene los estados de Alto y Bajo. Si se requiere una funcionalidad específica, consulte la Documentación Técnica.
+        
+    
+
 
 La disposición de los pines es la establecida por la biblioteca WiringPi, la cual se puede consultar en [pinout.xyz](https://pinout.xyz/pinout/wiringpi).
 
 ## Uso
 Al ejecutar la herramienta se despliega la información de configuración de la máquina y se habilita un prompt en el que se pueden ejecutar bloques de código G. La sintaxis básica se puede ver en la siguiente imagen.
+
 ![Sintaxis código G](./sintaxis_bloque_g.png)
 
 La lista de códigos G y M se presenta a continuación.
